@@ -15,6 +15,7 @@ export class HomeService {
     data: Data | null;
 
     constructor(private http: HttpClient) {
+        this.backgroundAudio.loop = true;
         this.data = this.getData();
     }
 

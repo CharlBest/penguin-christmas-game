@@ -34,7 +34,6 @@ export class LevelComponent implements OnInit, OnDestroy {
   showMenu = false;
   showEndScreen = false;
 
-  fallAudio: HTMLAudioElement = new Audio('assets/game/fall.mp3');
   countdownAudio: HTMLAudioElement = new Audio('assets/game/countdown.m4a');
 
   constructor(public homeService: HomeService,
@@ -108,14 +107,15 @@ export class LevelComponent implements OnInit, OnDestroy {
   }
 
   onClick() {
-    // TODO: this should be muted when sonud option is tured off
-    this.fallAudio.play();
-
-    const presentLeftStartPosition = this.sled.nativeElement.offsetLeft;
-
     if (this.clickLock) {
       return;
     }
+
+    // TODO: this should be muted when sonud option is tured off
+    const fallAudio = new Audio('assets/game/fall.mp3');
+    fallAudio.play();
+
+    const presentLeftStartPosition = this.sled.nativeElement.offsetLeft;
 
     this.clickLock = true;
     this.activateClickLock();
