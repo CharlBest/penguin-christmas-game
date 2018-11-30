@@ -23,10 +23,11 @@
 // Body rule
 body {
 	margin: 0;
+	user-select: none;
 
 	// App root rules
 	app-root {
-		margin-bottom: 49px;
+		// margin-bottom: 49px;
 		display: flex;
 		flex-direction: column;
 
