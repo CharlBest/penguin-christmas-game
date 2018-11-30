@@ -1,45 +1,19 @@
-import { Component, OnInit } from '@angular/core';
-import { finalize } from 'rxjs/operators';
-import { ItemViewModel } from '../../../../shared/view-models/item/item.view-model';
-import { FormErrorsService } from '../../shared/form-errors/form-errors.service';
-import { RefreshSameUrlService } from '../../shared/services/refresh-same-url.service';
-import { HomeService } from '../home.service';
+import { Component } from '@angular/core';
+import { ShareService } from '../../shared/services/share.service';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss'],
-  providers: [RefreshSameUrlService]
+  styleUrls: ['./home.component.scss']
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent {
 
-  isProcessing = true;
-  items: ItemViewModel[];
+  constructor(private shareService: ShareService) { }
 
-  constructor(private homeService: HomeService,
-    public formErrorsService: FormErrorsService,
-    private refreshSameUrlService: RefreshSameUrlService) { }
-
-  ngOnInit() {
-    this.refreshSameUrlService.init(() => {
-      window.scrollTo(0, 0);
-      this.getItems();
-    });
-
-    this.getItems();
-  }
-
-  getItems() {
-    this.isProcessing = true;
-
-    this.homeService.getItems(0)
-      .pipe(finalize(() => this.isProcessing = false))
-      .subscribe(data => {
-        if (data) {
-          this.items = data;
-        }
-      }, error => {
-        this.formErrorsService.updateFormValidity(error);
-      });
+  share() {
+    const url = ['/'];
+    if (!this.shareService.webShareWithUrl('Game', url)) {
+      console.log('Web share API not found');
+    }
   }
 }

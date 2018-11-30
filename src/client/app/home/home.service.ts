@@ -10,9 +10,56 @@ import { environment } from '../../environments/environment';
 })
 export class HomeService {
 
-    constructor(private http: HttpClient) { }
+    localStorageDataKey = 'data';
+    backgroundAudio: HTMLAudioElement = new Audio('assets/game/music.mp3');
+    data: Data | null;
+
+    constructor(private http: HttpClient) {
+        this.data = this.getData();
+    }
+
+    private getData(): Data | null {
+        const stringData = localStorage.getItem(this.localStorageDataKey);
+        try {
+            if (stringData) {
+                return JSON.parse(stringData);
+            } else {
+                return new Data();
+            }
+        } catch {
+            return null;
+        }
+    }
+
+    save() {
+        localStorage.setItem(this.localStorageDataKey, JSON.stringify(this.data));
+    }
 
     getItems(pageIndex: number, pageSize?: number): Observable<ItemViewModel[] | null> {
         return this.http.get<ItemViewModel[]>(`${environment.httpDomain}${ItemRoutes.getItems().client({ pageIndex, pageSize })}`);
+    }
+}
+
+export class Data {
+
+    constructor() {
+        this.settings = {
+            audio: true
+        };
+        this.levels = [];
+    }
+
+    settings: {
+        audio: boolean;
+    };
+
+    levels: Array<Level>;
+}
+
+export class Level {
+
+    constructor(public id: number, public bestScore: number) {
+        this.id = id;
+        this.bestScore = bestScore;
     }
 }

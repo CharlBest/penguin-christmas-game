@@ -4,9 +4,14 @@ import { MatButtonModule, MatCardModule, MatExpansionModule, MatProgressSpinnerM
 import { ItemModule } from '../item/item.module';
 import { GitHubModule } from '../shared/github/github.module';
 import { NetworkStatusModule } from '../shared/network-status/network-status.module';
-import { GitHubReadMeComponent } from './github-readme/github-readme.component';
+import { DonateComponent } from './donate/donate.component';
+import { EnterComponent } from './enter/enter.component';
 import { HomeRoutingModule } from './home-routing.module';
 import { HomeComponent } from './home/home.component';
+import { LevelComponent } from './level/level.component';
+import { LevelsComponent } from './levels/levels.component';
+import { SettingsComponent } from './settings/settings.component';
+import { StoreComponent } from './store/store.component';
 
 const materialModules = [
   MatButtonModule,
@@ -26,7 +31,12 @@ const materialModules = [
   ],
   declarations: [
     HomeComponent,
-    GitHubReadMeComponent,
+    EnterComponent,
+    LevelsComponent,
+    LevelComponent,
+    DonateComponent,
+    SettingsComponent,
+    StoreComponent,
   ]
 })
 export class HomeModule { }

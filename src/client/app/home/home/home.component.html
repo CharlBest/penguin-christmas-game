@@ -1,19 +1,12 @@
-<mat-card>
-    <mat-card-subtitle>Everything on this demo site is live/working condition. Creating a profile, sending emails, donating
-        money, uploading profile pictures and more.</mat-card-subtitle>
-</mat-card>
-
-<app-github-readme></app-github-readme>
-
-<ng-container *ngIf="!isProcessing">
-    <app-item *ngFor="let item of items"
-        [item]="item"></app-item>
-</ng-container>
-
-<mat-card *ngIf="!isProcessing && (!items || items?.length === 0) && networkStatus.isOnline">
-    No items exist
-</mat-card>
-
-<app-network-status #networkStatus></app-network-status>
-
-<mat-spinner *ngIf="isProcessing"></mat-spinner>
+<div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh;">
+    <button mat-raised-button
+        routerLink="/home/levels">Play</button>
+    <button mat-raised-button
+        routerLink="/home/settings">Help & Options</button>
+    <button mat-raised-button
+        (click)="share()">Share</button>
+    <button mat-raised-button
+        routerLink="/home/donate">Donate</button>
+    <button mat-raised-button
+        routerLink="/home/store">Store</button>
+</div>

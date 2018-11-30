@@ -1,0 +1,14 @@
+<div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh;">
+
+    <button mat-raised-button
+        routerLink="/home/menu">Menu</button>
+
+    <button mat-raised-button
+        *ngIf="!homeService?.backgroundAudio?.paused"
+        (click)="pauseAudio()">Stop music</button>
+
+    <button mat-raised-button
+        *ngIf="homeService?.backgroundAudio?.paused"
+        (click)="playAudio()">Play music</button>
+
+</div>
