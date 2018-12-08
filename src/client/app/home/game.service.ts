@@ -1,7 +1,12 @@
 import { Injectable } from '@angular/core';
 // tslint:disable-next-line:max-line-length
-import { AssetsManager, Axis, Camera, Engine, FreeCamera, HemisphericLight, ILoadingScreen, Mesh, MeshBuilder, PhysicsImpostor, PointerEventTypes, Scene, Sound, Space, StandardMaterial, Vector3 } from 'babylonjs';
+import { AssetsManager, Axis, Camera, Engine, FreeCamera, HemisphericLight, ILoadingScreen, Mesh, MeshBuilder, Observer, PhysicsImpostor, PointerEventTypes, Scene, Sound, Space, StandardMaterial, Vector3 } from 'babylonjs';
 import 'babylonjs-loaders';
+
+// import * as BABYLON from 'babylonjs';
+// import * as GUI from 'babylonjs-gui';
+// import { AdvancedDynamicTexture, Button } from 'babylonjs-gui';
+// import BABYLONGUI = require('babylonjs-gui');
 
 // Incrementally create 3D object and set the billboard property to make them 2D and
 // migrate to a full 3D game. Auto move camera for cool tour
@@ -62,11 +67,6 @@ export class GameService {
             // This attaches the camera to the canvas
             // this.camera.attachControl(canvas, true);
 
-            // Animate camera
-            this.scene.onBeforeRenderObservable.add(() => {
-                this.camera.position.x += Math.sin(0.02);
-            });
-
             // This creates a light, aiming 0,1,0 - to the sky (non-mesh)
             // const light = new BABYLON.PointLight('pointLight', new Vector3(0, 100, 100), this.scene);
             const light = new HemisphericLight('light1', new Vector3(0, 1, 0), this.scene);
@@ -79,9 +79,6 @@ export class GameService {
 
             // Tap event
             this.onPointerEvents();
-
-            // Gravity
-            // this.scene.gravity = new BABYLON.Vector3(0, -9.81, 0);
 
             // Physics
             this.scene.enablePhysics(new Vector3(0, -9.81, 0));
@@ -256,12 +253,10 @@ export class GameService {
         mesh.position.x = -1;
         mesh.position.y = 4;
 
-        // Animate
-        this.scene.onBeforeRenderObservable.add(() => {
-            mesh.position.x += Math.sin(0.02);
-        });
-
         this.objects.sleigh.mesh = mesh;
+
+        // Start auto scroll scene
+        this.activateAutoHorizontalScroll();
     }
 
     createBackground(x: number) {
@@ -327,6 +322,43 @@ export class GameService {
             }
         });
     }
+
+    activateAutoHorizontalScroll() {
+        if (this.objects.sleigh.mesh) {
+            this.objects.sleigh.observer = this.objects.sleigh.mesh.onBeforeRenderObservable.add(() => {
+                this.objects.sleigh.mesh!.position.x += Math.sin(0.02);
+            });
+        }
+
+        this.objects.camera.observer = this.scene.onBeforeRenderObservable.add(() => {
+            this.camera.position.x += Math.sin(0.02);
+        });
+    }
+
+    deactivateAutoHorizontalScroll() {
+        if (this.objects.sleigh.mesh) {
+            this.objects.sleigh.mesh.onBeforeRenderObservable.remove(this.objects.sleigh.observer);
+        }
+
+        this.scene.onBeforeRenderObservable.remove(this.objects.camera.observer);
+    }
+
+    pause() {
+        this.deactivateAutoHorizontalScroll();
+    }
+
+    resume() {
+        this.activateAutoHorizontalScroll();
+    }
+
+    restart() {
+        this.score = 0;
+        this.camera.position.x = 0;
+        if (this.objects.sleigh.mesh) {
+            this.objects.sleigh.mesh.position.x = -1;
+        }
+        this.activateAutoHorizontalScroll();
+    }
 }
 
 
@@ -339,12 +371,16 @@ class Assets {
 class Objects {
 
     constructor() {
+        this.camera = { observer: null };
         this.background = { material: null, mesh: [] };
         this.gift = { material: null, mesh: [] };
         this.house = { material: null, mesh: [] };
-        this.sleigh = { material: null, mesh: null };
+        this.sleigh = { material: null, mesh: null, observer: null };
     }
 
+    camera: {
+        observer: Observer<Scene> | null
+    };
     background: {
         material: StandardMaterial | null,
         mesh: Array<Mesh>
@@ -359,7 +395,8 @@ class Objects {
     };
     sleigh: {
         material: StandardMaterial | null,
-        mesh: Mesh | null
+        mesh: Mesh | null,
+        observer: Observer<Mesh> | null
     };
 }
 
@@ -371,7 +408,7 @@ class CustomLoadingScreen implements ILoadingScreen {
     constructor(public element: HTMLDivElement) { }
 
     displayLoadingUI() {
-        this.element.style.display = 'block';
+        this.element.style.display = 'flex';
     }
 
     hideLoadingUI() {

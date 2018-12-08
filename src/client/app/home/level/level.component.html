@@ -1,7 +1,15 @@
 <canvas #canvas></canvas>
 
-{{gameService.score}}
+<div class="toolbar">
+    <span>{{gameService.score}} points</span>
+    <button mat-icon-button>
+        <mat-icon (click)="openMenu()">pause_circle_outline</mat-icon>
+    </button>
+</div>
 
 <div #loadingScreen
-    style="display: none; background-color: red; position: absolute; left: 0; top: 0; right: 0; bottom: 0;">I'm
-    loading!!</div>
+    class="loading-screen">
+    <h2>Loading...</h2>
+    <mat-progress-bar mode="determinate"
+        [value]="gameService.assetManagerProgress"></mat-progress-bar>
+</div>

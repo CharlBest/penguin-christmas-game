@@ -3,3 +3,23 @@ canvas {
 	height: 100%;
 	touch-action: none;
 }
+
+.toolbar {
+	position: absolute;
+	top: 0;
+	right: 10px;
+}
+
+.loading-screen {
+	display: none;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	background-color: #fff;
+	position: absolute;
+	left: 0;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	padding: 10%;
+}

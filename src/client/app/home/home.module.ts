@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { MatButtonModule, MatCardModule, MatExpansionModule, MatProgressSpinnerModule } from '@angular/material';
+import { MatButtonModule, MatCardModule, MatDialogModule, MatExpansionModule, MatIconModule, MatProgressBarModule, MatProgressSpinnerModule } from '@angular/material';
 import { ItemModule } from '../item/item.module';
 import { GitHubModule } from '../shared/github/github.module';
 import { NetworkStatusModule } from '../shared/network-status/network-status.module';
@@ -10,6 +10,7 @@ import { HomeRoutingModule } from './home-routing.module';
 import { HomeComponent } from './home/home.component';
 import { LevelComponent } from './level/level.component';
 import { LevelsComponent } from './levels/levels.component';
+import { MenuDialogComponent } from './menu-dialog/menu-dialog.component';
 import { SettingsComponent } from './settings/settings.component';
 import { StoreComponent } from './store/store.component';
 
@@ -18,6 +19,9 @@ const materialModules = [
   MatCardModule,
   MatProgressSpinnerModule,
   MatExpansionModule,
+  MatProgressBarModule,
+  MatIconModule,
+  MatDialogModule
 ];
 
 @NgModule({
@@ -37,6 +41,10 @@ const materialModules = [
     DonateComponent,
     SettingsComponent,
     StoreComponent,
+    MenuDialogComponent,
+  ],
+  entryComponents: [
+    MenuDialogComponent
   ]
 })
 export class HomeModule { }
