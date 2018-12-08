@@ -1,0 +1,61 @@
+.container {
+	overflow: hidden;
+	height: 100vh;
+}
+
+.bg {
+	position: relative;
+	background-image: url("/assets/game/background.svg");
+	width: 4000px;
+	height: 100%;
+	will-change: transform;
+	overflow: hidden;
+	z-index: -1;
+}
+
+.sled-present-container {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+}
+
+.sled {
+	height: 100px;
+	margin-left: 20%;
+
+	img {
+		height: 100%;
+	}
+}
+
+.present {
+	height: 30px;
+	margin-left: 20%;
+	position: absolute;
+	animation-name: fall;
+	animation-timing-function: ease-in;
+	top: -100px;
+}
+
+@keyframes fall {
+	from {
+		top: 0;
+	}
+
+	to {
+		top: 100%;
+	}
+}
+
+.house {
+	position: absolute;
+	bottom: 0;
+	display: inline-block;
+}
+
+.countdown {
+	height: 100px;
+	width: 100px;
+}

@@ -11,7 +11,7 @@ import { environment } from '../../environments/environment';
 export class HomeService {
 
     localStorageDataKey = 'data';
-    backgroundAudio: HTMLAudioElement = new Audio('assets/game/music.mp3');
+    backgroundAudio: HTMLAudioElement = new Audio('assets/game/sounds/background.mp3');
     data: Data | null;
 
     constructor(private http: HttpClient) {
