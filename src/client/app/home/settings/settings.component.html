@@ -1,14 +1,23 @@
 <div class="container full-height">
 
     <button mat-raised-button
-        routerLink="/home/menu">Menu</button>
+        routerLink="/home/menu">
+        <mat-icon>menu</mat-icon>
+        <span>&nbsp;&nbsp;MENU</span>
+    </button>
 
     <button mat-raised-button
         *ngIf="!homeService?.backgroundAudio?.paused"
-        (click)="pauseAudio()">Stop music</button>
+        (click)="pauseAudio()">
+        <mat-icon>stop</mat-icon>
+        <span>&nbsp;&nbsp;MUTE MUSIC</span>
+    </button>
 
     <button mat-raised-button
         *ngIf="homeService?.backgroundAudio?.paused"
-        (click)="playAudio()">Play music</button>
+        (click)="playAudio()">
+        <mat-icon>play_arrow</mat-icon>
+        <span>&nbsp;&nbsp;PLAY MUSIC</span>
+    </button>
 
 </div>

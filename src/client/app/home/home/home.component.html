@@ -1,12 +1,27 @@
 <div class="container full-height">
     <button mat-raised-button
-        routerLink="/home/levels">Play</button>
+        routerLink="/home/levels">
+        <mat-icon>play_arrow</mat-icon>
+        <span>&nbsp;&nbsp;PLAY</span>
+    </button>
     <button mat-raised-button
-        routerLink="/home/settings">Help & Options</button>
+        routerLink="/home/settings">
+        <mat-icon>settings</mat-icon>
+        <span>&nbsp;&nbsp;OPTIONS</span>
+    </button>
     <button mat-raised-button
-        (click)="share()">Share</button>
+        (click)="share()">
+        <mat-icon>share</mat-icon>
+        <span>&nbsp;&nbsp;SHARE</span>
+    </button>
     <button mat-raised-button
-        routerLink="/payment">Donate</button>
+        routerLink="/payment">
+        <mat-icon>credit_card</mat-icon>
+        <span>&nbsp;&nbsp;DONATE</span>
+    </button>
     <button mat-raised-button
-        routerLink="/home/store">Store</button>
+        routerLink="/home/store">
+        <mat-icon>store</mat-icon>
+        <span>&nbsp;&nbsp;STORE</span>
+    </button>
 </div>
