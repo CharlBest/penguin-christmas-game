@@ -1,12 +1,7 @@
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable, Output } from '@angular/core';
 // tslint:disable-next-line:max-line-length
-import { AssetsManager, Axis, Camera, Engine, FreeCamera, HemisphericLight, ILoadingScreen, Mesh, MeshBuilder, Observer, PhysicsImpostor, PointerEventTypes, Scene, Sound, Space, StandardMaterial, Vector3 } from 'babylonjs';
+import { AssetsManager, Axis, Camera, Engine, FreeCamera, HemisphericLight, ILoadingScreen, Mesh, MeshBuilder, Observer, PhysicsImpostor, PointerEventTypes, Scene, Sound, Space, Sprite, SpriteManager, StandardMaterial, Vector3 } from 'babylonjs';
 import 'babylonjs-loaders';
-
-// import * as BABYLON from 'babylonjs';
-// import * as GUI from 'babylonjs-gui';
-// import { AdvancedDynamicTexture, Button } from 'babylonjs-gui';
-// import BABYLONGUI = require('babylonjs-gui');
 
 // Incrementally create 3D object and set the billboard property to make them 2D and
 // migrate to a full 3D game. Auto move camera for cool tour
@@ -20,32 +15,31 @@ import 'babylonjs-loaders';
 // Pointer events: https://doc.babylonjs.com/how_to/interactions
 // 2D unity game concepts: http://www.third-helix.com/2012/02/05/making-2d-games-with-unity.html
 
-// TODO:
-// Add music
-// Add menu
-// Add countdown
-// Add colision
-// TODO: remove console.logs
-// TODO: Fade out loading screen when finished
-// TODO: add progress bar to loading screen
-
 @Injectable({
     providedIn: 'root'
 })
 export class GameService {
+
+    @Output() finished: EventEmitter<number> = new EventEmitter<number>();
     engine: Engine;
     camera: Camera;
     scene: Scene;
+    assetsManager: AssetsManager;
 
     assets: Assets = new Assets();
     objects: Objects = new Objects();
 
     assetManagerProgress = 0;
     score = 0;
+    bestScore = 0;
+    levelId: number;
+    lastHouseXPosition: number;
 
     constructor() { }
 
-    init(canvas: HTMLCanvasElement, loadingScreenElement: HTMLDivElement) {
+    init(canvas: HTMLCanvasElement, loadingScreenElement: HTMLDivElement, levelId: number) {
+        this.levelId = levelId;
+
         const createScene = (): void => {
 
             // This creates a basic Babylon Scene object (non-mesh)
@@ -108,21 +102,12 @@ export class GameService {
 
     loadAssets() {
         // Assets manager
-        const assetsManager = new AssetsManager(this.scene);
+        this.assetsManager = new AssetsManager(this.scene);
 
-        assetsManager.addBinaryFileTask('countdownSound task', 'assets/game/sounds/countdown.m4a').onSuccess = (task) => {
-            this.assets.countdownSound = new Sound('countdownSound', task.data, this.scene, soundsReady);
-        };
+        this.loadSounds();
+        this.loadHouses();
 
-        assetsManager.addBinaryFileTask('backgroundSound task', 'assets/game/sounds/background.mp3').onSuccess = (task) => {
-            this.assets.backgroundSound = new Sound('backgroundSound', task.data, this.scene, soundsReady, { loop: true });
-        };
-
-        assetsManager.addBinaryFileTask('giftFallSound task', 'assets/game/sounds/gift-fall.mp3').onSuccess = (task) => {
-            this.assets.giftFallSound = new Sound('giftFallSound', task.data, this.scene, soundsReady);
-        };
-
-        assetsManager.addTextureTask('backgroundTexture task', 'assets/game/images/background.svg').onSuccess = (task) => {
+        this.assetsManager.addTextureTask('backgroundTexture task', 'assets/game/images/background.svg').onSuccess = (task) => {
             this.objects.background.material = new StandardMaterial('backgroundMaterial', this.scene);
             this.objects.background.material.diffuseTexture = task.texture;
             this.objects.background.material.opacityTexture = task.texture;
@@ -132,29 +117,45 @@ export class GameService {
             }
         };
 
-        assetsManager.addTextureTask('houseTexture task', 'assets/game/images/house.svg').onSuccess = (task) => {
-            this.objects.house.material = new StandardMaterial('houseMaterial', this.scene);
-            this.objects.house.material.diffuseTexture = task.texture;
-            this.objects.house.material.opacityTexture = task.texture;
-
-            for (let x = 0; x < 30; x++) {
-                this.createHouse(x * 8);
-            }
-        };
-
         // assetsManager.addMeshTask('giftTexture task', '', 'assets/game/objects/', 'gift.gltf').onSuccess = (task) => {
-        assetsManager.addTextureTask('giftTexture task', 'assets/game/images/gift.svg').onSuccess = (task) => {
+        this.assetsManager.addTextureTask('giftTexture task', 'assets/game/images/gift.svg').onSuccess = (task) => {
             this.objects.gift.material = new StandardMaterial('giftMaterial', this.scene);
             this.objects.gift.material.diffuseTexture = task.texture;
             this.objects.gift.material.opacityTexture = task.texture;
         };
 
-        assetsManager.addTextureTask('sleighTexture task', 'assets/game/images/sleigh.svg').onSuccess = (task) => {
+        this.assetsManager.addTextureTask('sleighTexture task', 'assets/game/images/sleigh.svg').onSuccess = (task) => {
             this.objects.sleigh.material = new StandardMaterial('sleighMaterial', this.scene);
             this.objects.sleigh.material.diffuseTexture = task.texture;
             this.objects.sleigh.material.opacityTexture = task.texture;
 
             this.createSleigh();
+        };
+
+        this.assetsManager.onFinish = (tasks) => {
+            this.engine.runRenderLoop(() => {
+                this.scene.render();
+            });
+        };
+
+        this.assetsManager.load();
+
+        this.assetsManager.onProgressObservable.add((event) => {
+            this.assetManagerProgress = ((event.totalCount - event.remainingCount) / event.totalCount) * 100;
+        });
+    }
+
+    loadSounds() {
+        this.assetsManager.addBinaryFileTask('countdownSound task', 'assets/game/sounds/countdown.m4a').onSuccess = (task) => {
+            this.assets.countdownSound = new Sound('countdownSound', task.data, this.scene, soundsReady);
+        };
+
+        this.assetsManager.addBinaryFileTask('backgroundSound task', 'assets/game/sounds/background.mp3').onSuccess = (task) => {
+            this.assets.backgroundSound = new Sound('backgroundSound', task.data, this.scene, soundsReady, { loop: true });
+        };
+
+        this.assetsManager.addBinaryFileTask('giftFallSound task', 'assets/game/sounds/gift-fall.mp3').onSuccess = (task) => {
+            this.assets.giftFallSound = new Sound('giftFallSound', task.data, this.scene, soundsReady);
         };
 
         let soundsReadyCount = 0;
@@ -165,18 +166,69 @@ export class GameService {
                 console.log('All sounds are ready');
             }
         };
+    }
 
-        assetsManager.onFinish = (tasks) => {
-            this.engine.runRenderLoop(() => {
-                this.scene.render();
+    loadHouses() {
+        // TODO: set precise instance count for every level (not fixed 30)
+        this.objects.house.spriteManager.small = new SpriteManager('smallHouseSpriteManager', 'assets/game/images/small-house.png',
+            30, 5, this.scene);
+        this.objects.house.spriteManager.small.cellWidth = HouseSize.small.width * 100;
+        this.objects.house.spriteManager.small.cellHeight = HouseSize.small.fullHeight * 100;
+
+        this.objects.house.spriteManager.medium = new SpriteManager('mediumHouseSpriteManager', 'assets/game/images/medium-house.png',
+            30, 5, this.scene);
+        this.objects.house.spriteManager.medium.cellWidth = HouseSize.medium.width * 100;
+        this.objects.house.spriteManager.medium.cellHeight = HouseSize.medium.fullHeight * 100;
+
+        this.objects.house.spriteManager.large = new SpriteManager('largeHouseSpriteManager', 'assets/game/images/large-house.png',
+            30, 5, this.scene);
+        this.objects.house.spriteManager.large.cellWidth = HouseSize.large.width * 100;
+        this.objects.house.spriteManager.large.cellHeight = HouseSize.large.fullHeight * 100;
+
+        const level = levels.find(x => x.id === this.levelId);
+        if (level) {
+            // Set previous house widths
+            let previousHousePosition = 0;
+            let previousHouseWidth = 0;
+            level.houses.forEach(x => {
+                x.previousHousePosition = previousHousePosition + (previousHouseWidth / 2) + (x.size.width / 2) + x.xPosition;
+
+                previousHouseWidth = x.size.width;
+                previousHousePosition = x.previousHousePosition;
             });
-        };
+            this.lastHouseXPosition = previousHousePosition;
 
-        assetsManager.load();
+            for (const house of level.houses) {
+                this.createHouse(house);
+            }
+        }
 
-        assetsManager.onProgressObservable.add((event) => {
-            this.assetManagerProgress = ((event.totalCount - event.remainingCount) / event.totalCount) * 100;
-        });
+        // this.assetsManager.addTextureTask('smallHouseTexture task', 'assets/game/images/small-house.svg').onSuccess = (task) => {
+        //     housesReadyCount++;
+        //     this.objects.house.material.small = new StandardMaterial('smallHouseMaterial', this.scene);
+        //     this.objects.house.material.small.diffuseTexture = task.texture;
+        //     this.objects.house.material.small.opacityTexture = task.texture;
+
+        //     init();
+        // };
+
+        // this.assetsManager.addTextureTask('mediumHouseTexture task', 'assets/game/images/medium-house.svg').onSuccess = (task) => {
+        //     housesReadyCount++;
+        //     this.objects.house.material.medium = new StandardMaterial('mediumHouseMaterial', this.scene);
+        //     this.objects.house.material.medium.diffuseTexture = task.texture;
+        //     this.objects.house.material.medium.opacityTexture = task.texture;
+
+        //     init();
+        // };
+
+        // this.assetsManager.addTextureTask('largeHouseTexture task', 'assets/game/images/large-house.svg').onSuccess = (task) => {
+        //     housesReadyCount++;
+        //     this.objects.house.material.large = new StandardMaterial('largeHouseMaterial', this.scene);
+        //     this.objects.house.material.large.diffuseTexture = task.texture;
+        //     this.objects.house.material.large.opacityTexture = task.texture;
+
+        //     init();
+        // };
     }
 
     customLoadingScreen(loadingScreenElement: HTMLDivElement) {
@@ -184,39 +236,50 @@ export class GameService {
         this.engine.loadingScreen = loadingScreen;
     }
 
-    createHouse(x: number) {
+    createHouse(house: House) {
         // Mesh
         const mesh = MeshBuilder
-            .CreateBox(`housePlane-${this.objects.house.mesh.length + 1}`, { width: 4, height: 4 }, this.scene);
-        mesh.material = this.objects.house.material;
-        mesh.position.x = x;
-        mesh.position.y = -2;
+            .CreateBox(`housePlane-${this.objects.house.mesh.length + 1}`,
+                { width: house.size.width, height: house.size.fullHeight }, this.scene);
+        // mesh.material = this.objects.house.material[house.size.name];
+        mesh.position.x = house.previousHousePosition;
+        mesh.position.y = (house.size.fullHeight / 2) - 3.5 /*Lower house floor*/;
+        mesh.visibility = 0;
 
+        // House sprite image
+        const smallHouseSprite = new Sprite(`houseSprite-${this.objects.house.mesh.length + 1}`,
+            this.objects.house.spriteManager[house.size.name]);
+        smallHouseSprite.width = house.size.width;
+        smallHouseSprite.height = house.size.fullHeight;
+        smallHouseSprite.position.x = mesh.position.x;
+        smallHouseSprite.position.y = mesh.position.y;
+
+        // House collision wrapper
         const houseCollisionMesh = MeshBuilder
-            .CreateBox(`housePlane-${this.objects.house.mesh.length + 1}-inner`, { width: 4, height: 3.4, depth: 4 }, this.scene);
-        houseCollisionMesh.position.x = x;
-        houseCollisionMesh.position.y = -2.4;
+            .CreateBox(`housePlane-${this.objects.house.mesh.length + 1}-inner`,
+                { width: house.size.width, height: house.size.height, depth: 4 }, this.scene);
+        houseCollisionMesh.position.y = (house.size.fullHeight - house.size.height) / 2 * -1;
         houseCollisionMesh.visibility = 0;
-
-        // Save
-        this.objects.house.mesh.push(houseCollisionMesh);
+        houseCollisionMesh.parent = mesh;
 
         // Physics
         houseCollisionMesh.physicsImpostor =
-            new PhysicsImpostor(houseCollisionMesh, PhysicsImpostor.BoxImpostor, { mass: 0, restitution: 0.9 }, this.scene);
+            new PhysicsImpostor(houseCollisionMesh, PhysicsImpostor.BoxImpostor,
+                { ignoreParent: true, mass: 0, restitution: 0.9 }, this.scene);
 
-        this.createChimney(mesh.position.x - 1.3);
-        this.createChimney(mesh.position.x + 0.2);
+        this.createChimney(mesh, house, house.size.chimneyPosition);
+        this.createChimney(mesh, house, house.size.chimneyPosition + 1);
 
-        // createGiftDropZone
+        // Create Gift Drop Zone
         const dropZone = MeshBuilder
-            .CreateGround(`dropZonePlane-${this.objects.house.mesh.length}`, { width: 1.5, height: 4 }, this.scene);
-        dropZone.position.x = x - 0.5;
-        dropZone.position.y = -0.5;
+            .CreateGround(`dropZonePlane-${this.objects.house.mesh.length + 1}`, { width: 1, height: 4 }, this.scene);
+        dropZone.position.x = (house.size.width / 2 * -1) + house.size.chimneyPosition + 0.5 /*half ground width*/;
+        dropZone.position.y = (house.size.height / 2);
+        dropZone.parent = mesh;
 
         // Physics
         dropZone.physicsImpostor =
-            new PhysicsImpostor(dropZone, PhysicsImpostor.BoxImpostor, { mass: 0, restitution: 0.9 }, this.scene);
+            new PhysicsImpostor(dropZone, PhysicsImpostor.BoxImpostor, { ignoreParent: true, mass: 0, restitution: 0.9 }, this.scene);
 
         // Points
         dropZone.physicsImpostor.onCollideEvent = (collider: PhysicsImpostor, collidedWith: PhysicsImpostor) => {
@@ -225,25 +288,29 @@ export class GameService {
                 this.score += 100;
                 const giftMesh = this.objects.gift.mesh.find(y => y.id === collidedWith.object['id']);
                 if (giftMesh) {
+                    smallHouseSprite.cellIndex = 1;
                     giftMesh.visibility = 0;
                 }
             }
-            // console.log(collider.object['id'], collidedWith.object['id']);
         };
+
+        // Save
+        this.objects.house.mesh.push(dropZone);
     }
 
-    createChimney(x: number) {
+    createChimney(parentMesh: Mesh, house: House, x: number) {
         // Mesh
         const mesh = MeshBuilder
             .CreateCylinder(`chimneyCylinder-${this.objects.house.mesh.length}-${Math.random()}`, { diameter: 0.1, height: 4 }, this.scene);
-        mesh.position.x = x;
-        mesh.position.y = 0;
+        mesh.position.x = (house.size.width / 2 * -1) + x;
+        mesh.position.y = (house.size.fullHeight / 2) - 0.1 /*Place below chimney*/;
         mesh.rotate(Axis.X, Math.PI / 2, Space.WORLD);
         mesh.visibility = 0;
+        mesh.parent = parentMesh;
 
         // Physics
         mesh.physicsImpostor =
-            new PhysicsImpostor(mesh, PhysicsImpostor.BoxImpostor, { mass: 0, restitution: 0.9 }, this.scene);
+            new PhysicsImpostor(mesh, PhysicsImpostor.BoxImpostor, { ignoreParent: true, mass: 0, restitution: 0.9 }, this.scene);
     }
 
     createSleigh() {
@@ -276,7 +343,7 @@ export class GameService {
     createGift(x: number) {
         // Mesh
         const mesh = MeshBuilder
-            .CreateBox(`giftPlane-${this.objects.gift.mesh.length + 1}`, { width: 1, height: 1, depth: 1 }, this.scene);
+            .CreateBox(`giftPlane-${this.objects.gift.mesh.length + 1}`, { size: 0.7 }, this.scene);
         mesh.material = this.objects.gift.material;
         mesh.position.x = x - 2;
         mesh.position.y = 3.5;
@@ -324,14 +391,21 @@ export class GameService {
     }
 
     activateAutoHorizontalScroll() {
+        const speed = 0.04;
+        const finishXPosition = this.lastHouseXPosition + 3 /*half sled width*/ + 6 /*full sled width*/;
+
         if (this.objects.sleigh.mesh) {
             this.objects.sleigh.observer = this.objects.sleigh.mesh.onBeforeRenderObservable.add(() => {
-                this.objects.sleigh.mesh!.position.x += Math.sin(0.02);
+                this.objects.sleigh.mesh!.position.x += Math.sin(speed);
             });
         }
 
         this.objects.camera.observer = this.scene.onBeforeRenderObservable.add(() => {
-            this.camera.position.x += Math.sin(0.02);
+            this.camera.position.x += Math.sin(speed);
+
+            if (this.camera.position.x > finishXPosition) {
+                this.onFinish();
+            }
         });
     }
 
@@ -352,12 +426,29 @@ export class GameService {
     }
 
     restart() {
+        // Score
         this.score = 0;
+
+        // Positions
         this.camera.position.x = 0;
         if (this.objects.sleigh.mesh) {
             this.objects.sleigh.mesh.position.x = -1;
         }
+
+        // Reset dropzones
+        this.objects.house.mesh.forEach(x => x['dropZoneSuccess'] = null);
+
+        // Reset lights
+        this.objects.house.spriteManager.small!.sprites.forEach(x => x.cellIndex = 0);
+        this.objects.house.spriteManager.medium!.sprites.forEach(x => x.cellIndex = 0);
+        this.objects.house.spriteManager.large!.sprites.forEach(x => x.cellIndex = 0);
+
         this.activateAutoHorizontalScroll();
+    }
+
+    onFinish() {
+        this.deactivateAutoHorizontalScroll();
+        this.finished.emit(this.score);
     }
 }
 
@@ -374,7 +465,14 @@ class Objects {
         this.camera = { observer: null };
         this.background = { material: null, mesh: [] };
         this.gift = { material: null, mesh: [] };
-        this.house = { material: null, mesh: [] };
+        this.house = {
+            spriteManager: {
+                small: null,
+                medium: null,
+                large: null
+            },
+            mesh: []
+        };
         this.sleigh = { material: null, mesh: null, observer: null };
     }
 
@@ -390,7 +488,7 @@ class Objects {
         mesh: Array<Mesh>
     };
     house: {
-        material: StandardMaterial | null,
+        spriteManager: { small: SpriteManager | null, medium: SpriteManager | null, large: SpriteManager | null },
         mesh: Array<Mesh>
     };
     sleigh: {
@@ -416,3 +514,172 @@ class CustomLoadingScreen implements ILoadingScreen {
         console.log('this will maybe hit twice because the scene and assets both use this');
     }
 }
+
+class House {
+    previousHousePosition: number;
+
+    constructor(public size: HouseSize, public xPosition: number) {
+
+    }
+}
+
+class HouseSize {
+    static small: HouseSize = {
+        name: 'small',
+        width: 3,
+        height: 2.5,
+        fullHeight: 3,
+        chimneyPosition: 1.5
+    };
+
+    // TODO: for some reason the houseCollisionMesh isn't aligning with medium house
+    static medium: HouseSize = {
+        name: 'medium',
+        width: 4,
+        height: 2.5,
+        fullHeight: 3.2,
+        chimneyPosition: 2
+    };
+    static large: HouseSize = {
+        name: 'large',
+        width: 6,
+        height: 4,
+        fullHeight: 4.8,
+        chimneyPosition: 3
+    };
+
+    name: string;
+    width: number;
+    height: number;
+    fullHeight: number;
+    chimneyPosition: number;
+}
+
+
+const levels = [
+    {
+        id: 1,
+        houses: [
+            new House(HouseSize.small, 3),
+            new House(HouseSize.small, 2),
+            new House(HouseSize.medium, 2),
+            new House(HouseSize.small, 2),
+            new House(HouseSize.medium, 2),
+            new House(HouseSize.large, 2),
+            new House(HouseSize.small, 2),
+            new House(HouseSize.large, 2),
+            new House(HouseSize.large, 1),
+            new House(HouseSize.medium, 2),
+            new House(HouseSize.small, 3),
+            new House(HouseSize.small, 2),
+            new House(HouseSize.medium, 2),
+            new House(HouseSize.small, 2),
+            new House(HouseSize.medium, 2),
+            new House(HouseSize.large, 0.4),
+            new House(HouseSize.small, 2),
+            new House(HouseSize.large, 2),
+            new House(HouseSize.large, 1),
+            new House(HouseSize.medium, 2),
+        ]
+    },
+    {
+        id: 2,
+        houses: [
+            new House(HouseSize.small, 3),
+            new House(HouseSize.small, 2),
+            new House(HouseSize.medium, 2),
+            new House(HouseSize.small, 2),
+            new House(HouseSize.medium, 2),
+            new House(HouseSize.large, 2),
+            new House(HouseSize.small, 2),
+            new House(HouseSize.large, 2),
+            new House(HouseSize.large, 1),
+            new House(HouseSize.medium, 2),
+            new House(HouseSize.small, 3),
+            new House(HouseSize.small, 2),
+            new House(HouseSize.medium, 2),
+            new House(HouseSize.small, 2),
+            new House(HouseSize.medium, 2),
+            new House(HouseSize.large, 2),
+            new House(HouseSize.small, 2),
+            new House(HouseSize.large, 2),
+            new House(HouseSize.large, 1),
+            new House(HouseSize.medium, 2),
+        ]
+    },
+    {
+        id: 3,
+        houses: [
+            new House(HouseSize.small, 3),
+            new House(HouseSize.small, 2),
+            new House(HouseSize.medium, 2),
+            new House(HouseSize.small, 2),
+            new House(HouseSize.medium, 2),
+            new House(HouseSize.large, 2),
+            new House(HouseSize.small, 2),
+            new House(HouseSize.large, 2),
+            new House(HouseSize.large, 1),
+            new House(HouseSize.medium, 2),
+            new House(HouseSize.small, 3),
+            new House(HouseSize.small, 2),
+            new House(HouseSize.medium, 2),
+            new House(HouseSize.small, 2),
+            new House(HouseSize.medium, 2),
+            new House(HouseSize.large, 2),
+            new House(HouseSize.small, 2),
+            new House(HouseSize.large, 2),
+            new House(HouseSize.large, 1),
+            new House(HouseSize.medium, 2),
+        ]
+    },
+    {
+        id: 4,
+        houses: [
+            new House(HouseSize.small, 3),
+            new House(HouseSize.small, 2),
+            new House(HouseSize.medium, 2),
+            new House(HouseSize.small, 2),
+            new House(HouseSize.medium, 2),
+            new House(HouseSize.large, 2),
+            new House(HouseSize.small, 2),
+            new House(HouseSize.large, 2),
+            new House(HouseSize.large, 1),
+            new House(HouseSize.medium, 2),
+            new House(HouseSize.small, 3),
+            new House(HouseSize.small, 2),
+            new House(HouseSize.medium, 2),
+            new House(HouseSize.small, 2),
+            new House(HouseSize.medium, 2),
+            new House(HouseSize.large, 2),
+            new House(HouseSize.small, 2),
+            new House(HouseSize.large, 2),
+            new House(HouseSize.large, 1),
+            new House(HouseSize.medium, 2),
+        ]
+    },
+    {
+        id: 5,
+        houses: [
+            new House(HouseSize.small, 3),
+            new House(HouseSize.small, 2),
+            new House(HouseSize.medium, 2),
+            new House(HouseSize.small, 2),
+            new House(HouseSize.medium, 2),
+            new House(HouseSize.large, 2),
+            new House(HouseSize.small, 2),
+            new House(HouseSize.large, 2),
+            new House(HouseSize.large, 1),
+            new House(HouseSize.medium, 2),
+            new House(HouseSize.small, 3),
+            new House(HouseSize.small, 2),
+            new House(HouseSize.medium, 2),
+            new House(HouseSize.small, 2),
+            new House(HouseSize.medium, 2),
+            new House(HouseSize.large, 2),
+            new House(HouseSize.small, 2),
+            new House(HouseSize.large, 2),
+            new House(HouseSize.large, 1),
+            new House(HouseSize.medium, 2),
+        ]
+    },
+];

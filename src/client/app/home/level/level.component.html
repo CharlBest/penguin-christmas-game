@@ -1,6 +1,7 @@
 <canvas #canvas></canvas>
 
 <div class="toolbar">
+    <span *ngIf="gameService.bestScore">{{gameService.bestScore}} best score - </span>
     <span>{{gameService.score}} points</span>
     <button mat-icon-button>
         <mat-icon (click)="openMenu()">pause_circle_outline</mat-icon>

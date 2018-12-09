@@ -6,6 +6,7 @@ import { GitHubModule } from '../shared/github/github.module';
 import { NetworkStatusModule } from '../shared/network-status/network-status.module';
 import { DonateComponent } from './donate/donate.component';
 import { EnterComponent } from './enter/enter.component';
+import { FinishDialogComponent } from './finish-dialog/finish-dialog.component';
 import { HomeRoutingModule } from './home-routing.module';
 import { HomeComponent } from './home/home.component';
 import { LevelComponent } from './level/level.component';
@@ -42,9 +43,11 @@ const materialModules = [
     SettingsComponent,
     StoreComponent,
     MenuDialogComponent,
+    FinishDialogComponent,
   ],
   entryComponents: [
-    MenuDialogComponent
+    MenuDialogComponent,
+    FinishDialogComponent,
   ]
 })
 export class HomeModule { }

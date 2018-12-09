@@ -173,6 +173,21 @@ body {
 		font-size: 75%;
 		padding: 0 1em;
 	}
+
+	.container {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+
+		&.full-height {
+			height: 100vh;
+		}
+
+		button {
+			margin-bottom: 10px;
+		}
+	}
 }
 
 // Override Quill toolbar with white icons when in night mode (Dark theme)

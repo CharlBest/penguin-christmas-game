@@ -1,18 +1,29 @@
-<mat-dialog-content style="text-align: center;">
-
+<mat-dialog-content class="container">
   <button mat-raised-button
     (click)="resume()"
-    mat-dialog-close>RESUME</button>
-  <br>
-  <br>
+    mat-dialog-close>
+    <mat-icon>play_arrow</mat-icon>
+    <span>&nbsp;&nbsp;RESUME</span>
+  </button>
+
   <button mat-raised-button
     (click)="restart()"
-    mat-dialog-close>RESTART</button>
-  <br>
-  <br>
+    mat-dialog-close>
+    <mat-icon>replay</mat-icon>
+    <span>&nbsp;&nbsp;RESTART</span>
+  </button>
+
+  <button mat-raised-button
+    routerLink="/home/settings"
+    mat-dialog-close>
+    <mat-icon>settings</mat-icon>
+    <span>&nbsp;&nbsp;OPTIONS</span>
+  </button>
+
   <button mat-raised-button
     routerLink="/home/levels"
-    mat-dialog-close>EXIT</button>
-  <br>
-  <br>
+    mat-dialog-close>
+    <mat-icon>menu</mat-icon>
+    <span>&nbsp;&nbsp;EXIT</span>
+  </button>
 </mat-dialog-content>

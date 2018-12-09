@@ -1,0 +1,20 @@
+<mat-dialog-content class="container">
+
+  <h2>Score {{score}}</h2>
+  <h2 *ngIf="bestScore && bestScore >= score">Best score {{bestScore}}</h2>
+  <h2 *ngIf="score > bestScore">New high score!!</h2>
+
+  <button mat-raised-button
+    (click)="restart()"
+    mat-dialog-close>
+    <mat-icon>replay</mat-icon>
+    <span>&nbsp;&nbsp;REPLAY</span>
+  </button>
+
+  <button mat-raised-button
+    routerLink="/home/levels"
+    mat-dialog-close>
+    <mat-icon>menu</mat-icon>
+    <span>&nbsp;&nbsp;LEVELS</span>
+  </button>
+</mat-dialog-content>
