@@ -107,13 +107,14 @@ export class GameService {
         this.loadSounds();
         this.loadHouses();
 
-        this.assetsManager.addTextureTask('backgroundTexture task', 'assets/game/images/background.svg').onSuccess = (task) => {
+        // TODO: this could actually change to sprites
+        this.assetsManager.addTextureTask('backgroundTexture task', 'assets/game/images/background.png').onSuccess = (task) => {
             this.objects.background.material = new StandardMaterial('backgroundMaterial', this.scene);
             this.objects.background.material.diffuseTexture = task.texture;
             this.objects.background.material.opacityTexture = task.texture;
 
             for (let x = 0; x < 30; x++) {
-                this.createBackground(x * 10);
+                this.createBackground(x * 18);
             }
         };
 
@@ -124,13 +125,9 @@ export class GameService {
             this.objects.gift.material.opacityTexture = task.texture;
         };
 
-        this.assetsManager.addTextureTask('sleighTexture task', 'assets/game/images/sleigh.svg').onSuccess = (task) => {
-            this.objects.sleigh.material = new StandardMaterial('sleighMaterial', this.scene);
-            this.objects.sleigh.material.diffuseTexture = task.texture;
-            this.objects.sleigh.material.opacityTexture = task.texture;
-
-            this.createSleigh();
-        };
+        this.objects.sleigh.spriteManager = new SpriteManager('sleighSpriteManager', 'assets/game/images/sleigh.png',
+            1, { width: 677, height: 155 }, this.scene);
+        this.createSleigh();
 
         this.assetsManager.onFinish = (tasks) => {
             this.engine.runRenderLoop(() => {
@@ -171,19 +168,13 @@ export class GameService {
     loadHouses() {
         // TODO: set precise instance count for every level (not fixed 30)
         this.objects.house.spriteManager.small = new SpriteManager('smallHouseSpriteManager', 'assets/game/images/small-house.png',
-            30, 5, this.scene);
-        this.objects.house.spriteManager.small.cellWidth = HouseSize.small.width * 100;
-        this.objects.house.spriteManager.small.cellHeight = HouseSize.small.fullHeight * 100;
+            30, { width: HouseSize.small.width * 100, height: HouseSize.small.fullHeight * 100 }, this.scene);
 
         this.objects.house.spriteManager.medium = new SpriteManager('mediumHouseSpriteManager', 'assets/game/images/medium-house.png',
-            30, 5, this.scene);
-        this.objects.house.spriteManager.medium.cellWidth = HouseSize.medium.width * 100;
-        this.objects.house.spriteManager.medium.cellHeight = HouseSize.medium.fullHeight * 100;
+            30, { width: HouseSize.medium.width * 100, height: HouseSize.medium.fullHeight * 100 }, this.scene);
 
         this.objects.house.spriteManager.large = new SpriteManager('largeHouseSpriteManager', 'assets/game/images/large-house.png',
-            30, 5, this.scene);
-        this.objects.house.spriteManager.large.cellWidth = HouseSize.large.width * 100;
-        this.objects.house.spriteManager.large.cellHeight = HouseSize.large.fullHeight * 100;
+            30, { width: HouseSize.large.width * 100, height: HouseSize.large.fullHeight * 100 }, this.scene);
 
         const level = levels.find(x => x.id === this.levelId);
         if (level) {
@@ -243,7 +234,7 @@ export class GameService {
                 { width: house.size.width, height: house.size.fullHeight }, this.scene);
         // mesh.material = this.objects.house.material[house.size.name];
         mesh.position.x = house.previousHousePosition;
-        mesh.position.y = (house.size.fullHeight / 2) - 3.5 /*Lower house floor*/;
+        mesh.position.y = (house.size.fullHeight / 2) - 3.7 /*Lower house floor*/;
         mesh.visibility = 0;
 
         // House sprite image
@@ -314,13 +305,17 @@ export class GameService {
     }
 
     createSleigh() {
-        // Mesh
-        const mesh = MeshBuilder.CreateBox('sleighPlane', { width: 6, height: 2 }, this.scene);
-        mesh.material = this.objects.sleigh.material;
-        mesh.position.x = -1;
-        mesh.position.y = 4;
+        // Sprite
+        const sleighSprite = new Sprite(`sleighSprite`, this.objects.sleigh.spriteManager!);
+        sleighSprite.width = 6.77;
+        sleighSprite.height = 1.55;
+        sleighSprite.position.x = -1;
+        sleighSprite.position.y = 4;
 
-        this.objects.sleigh.mesh = mesh;
+        this.objects.sleigh.sprite = sleighSprite;
+
+        // Animate
+        sleighSprite.playAnimation(0, 4, true, 100, () => { });
 
         // Start auto scroll scene
         this.activateAutoHorizontalScroll();
@@ -329,7 +324,7 @@ export class GameService {
     createBackground(x: number) {
         // Mesh
         const mesh = MeshBuilder
-            .CreateBox(`backgroundPlane-${this.objects.background.mesh.length + 1}`, { width: 10, height: 10 }, this.scene);
+            .CreateBox(`backgroundPlane-${this.objects.background.mesh.length + 1}`, { width: 18, height: 10 }, this.scene);
 
         mesh.material = this.objects.background.material;
         mesh.position.x = x - 50; // -50 is to compensate for left offset
@@ -378,8 +373,8 @@ export class GameService {
             switch (pointerInfo.type) {
                 // TODO: should I rather use window.addEventListener('click')
                 case PointerEventTypes.POINTERTAP:
-                    if (this.objects.sleigh.mesh) {
-                        this.createGift(this.objects.sleigh.mesh.position.x);
+                    if (this.objects.sleigh.sprite) {
+                        this.createGift(this.objects.sleigh.sprite.position.x);
                         this.assets.giftFallSound.play();
                     }
                     break;
@@ -394,13 +389,8 @@ export class GameService {
         const speed = 0.04;
         const finishXPosition = this.lastHouseXPosition + 3 /*half sled width*/ + 6 /*full sled width*/;
 
-        if (this.objects.sleigh.mesh) {
-            this.objects.sleigh.observer = this.objects.sleigh.mesh.onBeforeRenderObservable.add(() => {
-                this.objects.sleigh.mesh!.position.x += Math.sin(speed);
-            });
-        }
-
         this.objects.camera.observer = this.scene.onBeforeRenderObservable.add(() => {
+            this.objects.sleigh.sprite!.position.x += Math.sin(speed);
             this.camera.position.x += Math.sin(speed);
 
             if (this.camera.position.x > finishXPosition) {
@@ -410,10 +400,6 @@ export class GameService {
     }
 
     deactivateAutoHorizontalScroll() {
-        if (this.objects.sleigh.mesh) {
-            this.objects.sleigh.mesh.onBeforeRenderObservable.remove(this.objects.sleigh.observer);
-        }
-
         this.scene.onBeforeRenderObservable.remove(this.objects.camera.observer);
     }
 
@@ -431,8 +417,8 @@ export class GameService {
 
         // Positions
         this.camera.position.x = 0;
-        if (this.objects.sleigh.mesh) {
-            this.objects.sleigh.mesh.position.x = -1;
+        if (this.objects.sleigh.sprite) {
+            this.objects.sleigh.sprite.position.x = -1;
         }
 
         // Reset dropzones
@@ -473,7 +459,7 @@ class Objects {
             },
             mesh: []
         };
-        this.sleigh = { material: null, mesh: null, observer: null };
+        this.sleigh = { spriteManager: null, sprite: null, observer: null };
     }
 
     camera: {
@@ -492,8 +478,8 @@ class Objects {
         mesh: Array<Mesh>
     };
     sleigh: {
-        material: StandardMaterial | null,
-        mesh: Mesh | null,
+        spriteManager: SpriteManager | null,
+        sprite: Sprite | null,
         observer: Observer<Mesh> | null
     };
 }
