@@ -11,6 +11,7 @@ import { Level } from '../models/level';
 export class BuilderDialogComponent implements OnInit {
 
   levelId: number;
+  exportData: string | null;
 
   constructor(public configService: ConfigService,
     private route: ActivatedRoute) { }
@@ -58,5 +59,10 @@ export class BuilderDialogComponent implements OnInit {
 
     localStorage.setItem('levels', JSON.stringify(data));
     window.location.reload();
+  }
+
+  export() {
+    const data = localStorage.getItem('levels');
+    this.exportData = data;
   }
 }

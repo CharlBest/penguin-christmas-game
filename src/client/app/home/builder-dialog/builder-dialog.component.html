@@ -61,9 +61,18 @@
   </button>
 
   <button mat-raised-button
+    (click)="export()"
+    color="primary">
+    <span>Export</span>
+  </button>
+
+  <button mat-raised-button
     (click)="save()"
     color="primary"
     mat-dialog-close>
     <span>SAVE</span>
   </button>
+
+  <div [innerHTML]="exportData"
+    style="user-select: all;"></div>
 </mat-dialog-content>

@@ -1,6 +1,6 @@
 import { ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { HomeService, Level } from '../home.service';
+import { HomeService } from '../home.service';
 
 // @Component({
 //   selector: 'app-level',
@@ -185,21 +185,21 @@ export class Level1Component implements OnInit, OnDestroy {
   }
 
   isDone() {
-    this.showEndScreen = true;
-    clearInterval(this.backgroundIntervalId);
+    // this.showEndScreen = true;
+    // clearInterval(this.backgroundIntervalId);
 
-    if (this.homeService.data) {
-      const level = this.homeService.data.levels.find(x => x.id === this.levelId);
-      if (level) {
-        if (this.score > level.bestScore) {
-          level.bestScore = this.score;
-          this.homeService.save();
-        }
-      } else {
-        this.homeService.data.levels.push(new Level(this.levelId, this.score));
-        this.homeService.save();
-      }
-    }
+    // if (this.homeService.data) {
+    //   const level = this.homeService.data.levels.find(x => x.id === this.levelId);
+    //   if (level) {
+    //     if (this.score > level.bestScore) {
+    //       level.bestScore = this.score;
+    //       this.homeService.save();
+    //     }
+    //   } else {
+    //     this.homeService.data.levels.push(new Level(this.levelId, this.score));
+    //     this.homeService.save();
+    //   }
+    // }
   }
 }
 
