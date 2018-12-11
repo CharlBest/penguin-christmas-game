@@ -50,6 +50,8 @@ export class LevelComponent implements OnInit, AfterViewInit, OnDestroy {
             this.homeService.save();
           }
         } else {
+          this.gameService.bestScore = score;
+
           this.homeService.data.levels.push(new Level(this.levelId, score));
           this.homeService.save();
         }

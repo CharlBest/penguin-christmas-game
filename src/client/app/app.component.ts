@@ -35,7 +35,7 @@ export class AppComponent {
     this.notificationService.init();
 
     // Show cookie consent
-    this.cookieConsentSnackbarService.openCookieConsentSnackBar();
+    // this.cookieConsentSnackbarService.openCookieConsentSnackBar();
 
     // ASCII Art
     this.asciiArtService.slant();
