@@ -17,7 +17,7 @@ export class LevelComponent implements OnInit, AfterViewInit, OnDestroy {
   levelId: number;
 
   constructor(public gameService: GameService,
-    private homeService: HomeService,
+    public homeService: HomeService,
     private dialog: MatDialog,
     private route: ActivatedRoute) { }
 

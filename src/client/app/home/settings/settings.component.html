@@ -7,16 +7,16 @@
     </button>
 
     <button mat-raised-button
-        *ngIf="!homeService?.backgroundAudio?.paused"
-        (click)="pauseAudio()">
-        <mat-icon>stop</mat-icon>
+        *ngIf="!homeService?.data?.settings.disableAudio"
+        (click)="homeService.disableAudio()">
+        <mat-icon>volume_up</mat-icon>
         <span>&nbsp;&nbsp;MUTE MUSIC</span>
     </button>
 
     <button mat-raised-button
-        *ngIf="homeService?.backgroundAudio?.paused"
-        (click)="playAudio()">
-        <mat-icon>play_arrow</mat-icon>
+        *ngIf="homeService?.data?.settings.disableAudio"
+        (click)="homeService.enableAudio()">
+        <mat-icon>volume_off</mat-icon>
         <span>&nbsp;&nbsp;PLAY MUSIC</span>
     </button>
 

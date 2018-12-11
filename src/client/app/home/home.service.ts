@@ -7,12 +7,17 @@ import { Injectable } from '@angular/core';
 export class HomeService {
 
     localStorageDataKey = 'data';
-    backgroundAudio: HTMLAudioElement = new Audio('assets/game/sounds/background.mp3');
+    backgroundAudio: HTMLAudioElement;
     data: Data | null;
 
     constructor(private http: HttpClient) {
-        this.backgroundAudio.loop = true;
+        this.createBackgroundAudio();
         this.data = this.getData();
+    }
+
+    createBackgroundAudio() {
+        this.backgroundAudio = new Audio('assets/game/sounds/background.mp3');
+        this.backgroundAudio.loop = true;
     }
 
     private getData(): Data | null {
@@ -21,7 +26,9 @@ export class HomeService {
             if (stringData) {
                 return JSON.parse(stringData);
             } else {
-                return new Data();
+                const data = new Data();
+                localStorage.setItem(this.localStorageDataKey, JSON.stringify(data));
+                return data;
             }
         } catch {
             return null;
@@ -31,19 +38,37 @@ export class HomeService {
     save() {
         localStorage.setItem(this.localStorageDataKey, JSON.stringify(this.data));
     }
+
+    enableAudio() {
+        this.backgroundAudio.play();
+
+        if (this.data) {
+            this.data.settings.disableAudio = false;
+            this.save();
+        }
+    }
+
+    disableAudio() {
+        this.backgroundAudio.pause();
+
+        if (this.data) {
+            this.data.settings.disableAudio = true;
+            this.save();
+        }
+    }
 }
 
 export class Data {
 
     constructor() {
         this.settings = {
-            audio: true
+            disableAudio: true
         };
         this.levels = [];
     }
 
     settings: {
-        audio: boolean;
+        disableAudio: boolean;
     };
 
     levels: Array<Level>;

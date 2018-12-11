@@ -12,8 +12,8 @@ export class EnterComponent {
     private router: Router) { }
 
   enter() {
-    if (this.homeService.data && this.homeService.data.settings.audio) {
-      this.homeService.backgroundAudio.play();
+    if (this.homeService.data && !this.homeService.data.settings.disableAudio) {
+      this.homeService.enableAudio();
     }
 
     this.router.navigate(['/home/menu']);

@@ -2,6 +2,7 @@ import { EventEmitter, Injectable, Output } from '@angular/core';
 // tslint:disable-next-line:max-line-length
 import { AssetsManager, Axis, Camera, Engine, FreeCamera, HemisphericLight, ILoadingScreen, Mesh, MeshBuilder, Observer, PhysicsImpostor, PointerEventTypes, Scene, Sound, Space, Sprite, SpriteManager, StandardMaterial, Vector3 } from 'babylonjs';
 import 'babylonjs-loaders';
+import { HomeService } from './home.service';
 
 // Incrementally create 3D object and set the billboard property to make them 2D and
 // migrate to a full 3D game. Auto move camera for cool tour
@@ -35,7 +36,7 @@ export class GameService {
     levelId: number;
     lastHouseXPosition: number;
 
-    constructor() { }
+    constructor(private homeService: HomeService) { }
 
     init(canvas: HTMLCanvasElement, loadingScreenElement: HTMLDivElement, levelId: number) {
         this.levelId = levelId;
@@ -404,7 +405,10 @@ export class GameService {
                 case PointerEventTypes.POINTERTAP:
                     if (this.objects.sleigh.sprite) {
                         this.createGift(this.objects.sleigh.sprite.position.x);
-                        this.assets.giftFallSound.play();
+
+                        if (this.homeService.data && !this.homeService.data.settings.disableAudio) {
+                            this.assets.giftFallSound.play();
+                        }
                     }
                     break;
                 // case PointerEventTypes.POINTERDOUBLETAP:
