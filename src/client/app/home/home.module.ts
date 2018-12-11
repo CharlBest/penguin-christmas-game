@@ -1,9 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { MatButtonModule, MatCardModule, MatDialogModule, MatExpansionModule, MatIconModule, MatProgressBarModule, MatProgressSpinnerModule } from '@angular/material';
+import { FormsModule } from '@angular/forms';
+import { MatButtonModule, MatButtonToggleModule, MatCardModule, MatDialogModule, MatExpansionModule, MatIconModule, MatInputModule, MatProgressBarModule, MatProgressSpinnerModule, MatSliderModule } from '@angular/material';
 import { ItemModule } from '../item/item.module';
 import { GitHubModule } from '../shared/github/github.module';
 import { NetworkStatusModule } from '../shared/network-status/network-status.module';
+import { BuilderDialogComponent } from './builder-dialog/builder-dialog.component';
 import { DonateComponent } from './donate/donate.component';
 import { EnterComponent } from './enter/enter.component';
 import { FinishDialogComponent } from './finish-dialog/finish-dialog.component';
@@ -22,7 +24,10 @@ const materialModules = [
   MatExpansionModule,
   MatProgressBarModule,
   MatIconModule,
-  MatDialogModule
+  MatDialogModule,
+  MatInputModule,
+  MatSliderModule,
+  MatButtonToggleModule,
 ];
 
 @NgModule({
@@ -32,6 +37,7 @@ const materialModules = [
     ItemModule,
     GitHubModule,
     NetworkStatusModule,
+    FormsModule,
     ...materialModules
   ],
   declarations: [
@@ -44,10 +50,12 @@ const materialModules = [
     StoreComponent,
     MenuDialogComponent,
     FinishDialogComponent,
+    BuilderDialogComponent,
   ],
   entryComponents: [
     MenuDialogComponent,
     FinishDialogComponent,
+    BuilderDialogComponent,
   ]
 })
 export class HomeModule { }

@@ -3,7 +3,7 @@ import { MatDialog } from '@angular/material';
 import { ActivatedRoute } from '@angular/router';
 import { FinishDialogComponent } from '../finish-dialog/finish-dialog.component';
 import { GameService } from '../game.service';
-import { HomeService, Level } from '../home.service';
+import { HomeService, SavedLevel } from '../home.service';
 import { MenuDialogComponent } from '../menu-dialog/menu-dialog.component';
 
 @Component({
@@ -52,7 +52,7 @@ export class LevelComponent implements OnInit, AfterViewInit, OnDestroy {
         } else {
           this.gameService.bestScore = score;
 
-          this.homeService.data.levels.push(new Level(this.levelId, score));
+          this.homeService.data.levels.push(new SavedLevel(this.levelId, score));
           this.homeService.save();
         }
       }

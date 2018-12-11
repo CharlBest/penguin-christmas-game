@@ -71,10 +71,10 @@ export class Data {
         disableAudio: boolean;
     };
 
-    levels: Array<Level>;
+    levels: Array<SavedLevel>;
 }
 
-export class Level {
+export class SavedLevel {
 
     constructor(public id: number, public bestScore: number) {
         this.id = id;

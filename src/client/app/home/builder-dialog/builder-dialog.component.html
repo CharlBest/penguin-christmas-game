@@ -1,0 +1,69 @@
+<mat-dialog-content>
+
+  <mat-expansion-panel *ngFor="let level of configService.levels"
+    [class.active]="levelId === level.id">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Level {{level.id}}
+      </mat-panel-title>
+      <mat-panel-description>
+        Speed = {{level.speed}}
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+
+    <span>speed</span>
+    <mat-slider min="0.02"
+      max="0.1"
+      step="0.01"
+      [(ngModel)]="level.speed"></mat-slider>
+
+    <mat-card *ngFor="let house of level.houses; let i = index">
+      <mat-card-subtitle>House {{i + 1}}</mat-card-subtitle>
+      <mat-card-content>
+        <mat-button-toggle-group [(ngModel)]="house.size.name"
+          name="fontStyle">
+          <mat-button-toggle value="small">Small</mat-button-toggle>
+          <mat-button-toggle value="medium">Medium</mat-button-toggle>
+          <mat-button-toggle value="large">Large</mat-button-toggle>
+        </mat-button-toggle-group>
+
+        <br>
+        <mat-form-field appearance="fill">
+          <mat-label>position</mat-label>
+          <input matInput
+            [(ngModel)]="house.xPosition">
+        </mat-form-field>
+      </mat-card-content>
+
+      <mat-card-actions>
+        <button mat-raised-button
+          (click)="removeHouse(level, i)"
+          color="primary">
+          <span>Remove house</span>
+        </button>
+      </mat-card-actions>
+    </mat-card>
+
+    <br>
+    <br>
+
+    <button mat-raised-button
+      (click)="addHouse(level)"
+      color="primary">
+      <span>Add house</span>
+    </button>
+  </mat-expansion-panel>
+
+  <button mat-raised-button
+    (click)="addLevel()"
+    color="primary">
+    <span>Add level</span>
+  </button>
+
+  <button mat-raised-button
+    (click)="save()"
+    color="primary"
+    mat-dialog-close>
+    <span>SAVE</span>
+  </button>
+</mat-dialog-content>

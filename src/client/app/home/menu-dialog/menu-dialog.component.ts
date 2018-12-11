@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material';
+import { BuilderDialogComponent } from '../builder-dialog/builder-dialog.component';
 import { GameService } from '../game.service';
 
 @Component({
@@ -8,7 +10,8 @@ import { GameService } from '../game.service';
 })
 export class MenuDialogComponent implements OnInit {
 
-  constructor(private gameService: GameService) { }
+  constructor(private gameService: GameService,
+    private dialog: MatDialog) { }
 
   ngOnInit() {
   }
@@ -19,5 +22,9 @@ export class MenuDialogComponent implements OnInit {
 
   restart() {
     this.gameService.restart();
+  }
+
+  openLevelBuilder() {
+    this.dialog.open(BuilderDialogComponent, { disableClose: true });
   }
 }

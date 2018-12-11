@@ -21,6 +21,13 @@
   </button>
 
   <button mat-raised-button
+    (click)="openLevelBuilder()"
+    mat-dialog-close>
+    <mat-icon>build</mat-icon>
+    <span>&nbsp;&nbsp;BUILDER</span>
+  </button>
+
+  <button mat-raised-button
     routerLink="/home/levels"
     mat-dialog-close>
     <mat-icon>menu</mat-icon>
