@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ConfigService } from '../config.service';
+import { House } from '../models/house';
 import { Level } from '../models/level';
 
 @Component({
@@ -64,5 +65,9 @@ export class BuilderDialogComponent implements OnInit {
   export() {
     const data = localStorage.getItem('levels');
     this.exportData = data;
+  }
+
+  updateHouseSize(house: House, value: string) {
+    house.size = this.configService.getHouseSize(value)!;
   }
 }

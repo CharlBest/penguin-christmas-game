@@ -10,7 +10,11 @@ export class ConfigService {
     levels = levels;
 
     createHouse(houseSize: string, position: number) {
-        let size: HouseSize;
+        return new House(this.getHouseSize(houseSize)!, position);
+    }
+
+    getHouseSize(houseSize: string): HouseSize | null {
+        let size: HouseSize | null = null;
 
         switch (houseSize) {
             case 'small':
@@ -24,10 +28,11 @@ export class ConfigService {
                 break;
 
             default:
+                console.log('How size doesn\'t exist');
                 break;
         }
 
-        return new House(size!, position);
+        return size;
     }
 }
 

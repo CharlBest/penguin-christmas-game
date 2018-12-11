@@ -20,8 +20,9 @@
     <mat-card *ngFor="let house of level.houses; let i = index">
       <mat-card-subtitle>House {{i + 1}}</mat-card-subtitle>
       <mat-card-content>
-        <mat-button-toggle-group [(ngModel)]="house.size.name"
-          name="fontStyle">
+        <mat-button-toggle-group #group="matButtonToggleGroup"
+          [value]="house.size.name"
+          (change)="updateHouseSize(house, group.value)">
           <mat-button-toggle value="small">Small</mat-button-toggle>
           <mat-button-toggle value="medium">Medium</mat-button-toggle>
           <mat-button-toggle value="large">Large</mat-button-toggle>
