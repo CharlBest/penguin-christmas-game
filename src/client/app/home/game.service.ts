@@ -39,6 +39,7 @@ export class GameService {
 
     init(canvas: HTMLCanvasElement, loadingScreenElement: HTMLDivElement, levelId: number) {
         this.levelId = levelId;
+        this.overwriteLevelForTesting();
 
         const createScene = (): void => {
 
@@ -100,6 +101,41 @@ export class GameService {
         });
     }
 
+    overwriteLevelForTesting() {
+        const levelOverride = localStorage.getItem('levels');
+        try {
+            if (levelOverride) {
+                const levelOverrideJSON = JSON.parse(levelOverride);
+                const level = levels.find(x => x.id === levelOverrideJSON.id);
+                if (level) {
+                    level.houses = [];
+                    for (const house of levelOverrideJSON.houses) {
+                        let size: HouseSize;
+
+                        switch (house.size) {
+                            case 'small':
+                                size = HouseSize.small;
+                                break;
+                            case 'medium':
+                                size = HouseSize.medium;
+                                break;
+                            case 'large':
+                                size = HouseSize.large;
+                                break;
+
+                            default:
+                                break;
+                        }
+
+                        level.houses.push(new House(size!, house.position));
+                    }
+                }
+            }
+        } catch {
+            console.log('Not valid JSON');
+        }
+    }
+
     loadAssets() {
         // Assets manager
         this.assetsManager = new AssetsManager(this.scene);
@@ -107,14 +143,23 @@ export class GameService {
         this.loadSounds();
         this.loadHouses();
 
+        const amountOfBackAndForegrounds = 10;
         // TODO: this could actually change to sprites
         this.assetsManager.addTextureTask('backgroundTexture task', 'assets/game/images/background.png').onSuccess = (task) => {
+            // Set background
             this.objects.background.material = new StandardMaterial('backgroundMaterial', this.scene);
             this.objects.background.material.diffuseTexture = task.texture;
             this.objects.background.material.opacityTexture = task.texture;
 
-            for (let x = 0; x < 30; x++) {
+            // Load foreground
+            this.objects.foreground.spriteManager = new SpriteManager(`forgroundSpriteManager`,
+                'assets/game/images/foreground.png',
+                amountOfBackAndForegrounds, { width: 1800, height: 300 }, this.scene);
+
+            // Create back/front ground scenes
+            for (let x = 0; x < amountOfBackAndForegrounds; x++) {
                 this.createBackground(x * 18);
+                this.createForeground(x * 18);
             }
         };
 
@@ -125,8 +170,6 @@ export class GameService {
             this.objects.gift.material.opacityTexture = task.texture;
         };
 
-        this.objects.sleigh.spriteManager = new SpriteManager('sleighSpriteManager', 'assets/game/images/sleigh.png',
-            1, { width: 677, height: 155 }, this.scene);
         this.createSleigh();
 
         this.assetsManager.onFinish = (tasks) => {
@@ -193,33 +236,6 @@ export class GameService {
                 this.createHouse(house);
             }
         }
-
-        // this.assetsManager.addTextureTask('smallHouseTexture task', 'assets/game/images/small-house.svg').onSuccess = (task) => {
-        //     housesReadyCount++;
-        //     this.objects.house.material.small = new StandardMaterial('smallHouseMaterial', this.scene);
-        //     this.objects.house.material.small.diffuseTexture = task.texture;
-        //     this.objects.house.material.small.opacityTexture = task.texture;
-
-        //     init();
-        // };
-
-        // this.assetsManager.addTextureTask('mediumHouseTexture task', 'assets/game/images/medium-house.svg').onSuccess = (task) => {
-        //     housesReadyCount++;
-        //     this.objects.house.material.medium = new StandardMaterial('mediumHouseMaterial', this.scene);
-        //     this.objects.house.material.medium.diffuseTexture = task.texture;
-        //     this.objects.house.material.medium.opacityTexture = task.texture;
-
-        //     init();
-        // };
-
-        // this.assetsManager.addTextureTask('largeHouseTexture task', 'assets/game/images/large-house.svg').onSuccess = (task) => {
-        //     housesReadyCount++;
-        //     this.objects.house.material.large = new StandardMaterial('largeHouseMaterial', this.scene);
-        //     this.objects.house.material.large.diffuseTexture = task.texture;
-        //     this.objects.house.material.large.opacityTexture = task.texture;
-
-        //     init();
-        // };
     }
 
     customLoadingScreen(loadingScreenElement: HTMLDivElement) {
@@ -305,17 +321,18 @@ export class GameService {
     }
 
     createSleigh() {
+        // Load
+        this.objects.sleigh.spriteManager = new SpriteManager('sleighSpriteManager', 'assets/game/images/sleigh.png',
+            1, { width: 677, height: 155 }, this.scene);
+
         // Sprite
-        const sleighSprite = new Sprite(`sleighSprite`, this.objects.sleigh.spriteManager!);
-        sleighSprite.width = 6.77;
-        sleighSprite.height = 1.55;
-        sleighSprite.position.x = -1;
-        sleighSprite.position.y = 4;
+        const sprite = new Sprite(`sleighSprite`, this.objects.sleigh.spriteManager!);
+        sprite.width = 6.77;
+        sprite.height = 1.55;
+        sprite.position.x = -1;
+        sprite.position.y = 4;
 
-        this.objects.sleigh.sprite = sleighSprite;
-
-        // Animate
-        sleighSprite.playAnimation(0, 4, true, 100, () => { });
+        this.objects.sleigh.sprite = sprite;
 
         // Start auto scroll scene
         this.activateAutoHorizontalScroll();
@@ -327,12 +344,24 @@ export class GameService {
             .CreateBox(`backgroundPlane-${this.objects.background.mesh.length + 1}`, { width: 18, height: 10 }, this.scene);
 
         mesh.material = this.objects.background.material;
-        mesh.position.x = x - 50; // -50 is to compensate for left offset
+        mesh.position.x = x;
         mesh.position.y = 0;
         mesh.position.z = 10;
 
         // Save
         this.objects.background.mesh.push(mesh);
+    }
+
+    createForeground(x: number) {
+        // Sprite
+        const sprite = new Sprite(`foregroundSprite-${this.objects.foreground.sprite.length + 1}`, this.objects.foreground.spriteManager!);
+        sprite.width = 18;
+        sprite.height = 3;
+        sprite.position.x = x;
+        sprite.position.y = -3.5;
+
+        // Save
+        this.objects.foreground.sprite.push(sprite);
     }
 
     createGift(x: number) {
@@ -389,6 +418,9 @@ export class GameService {
         const speed = 0.04;
         const finishXPosition = this.lastHouseXPosition + 3 /*half sled width*/ + 6 /*full sled width*/;
 
+        // Sled sprite animation
+        this.objects.sleigh.sprite!.playAnimation(0, 4, true, 100, () => { });
+
         this.objects.camera.observer = this.scene.onBeforeRenderObservable.add(() => {
             this.objects.sleigh.sprite!.position.x += Math.sin(speed);
             this.camera.position.x += Math.sin(speed);
@@ -401,6 +433,7 @@ export class GameService {
 
     deactivateAutoHorizontalScroll() {
         this.scene.onBeforeRenderObservable.remove(this.objects.camera.observer);
+        this.objects.sleigh.sprite!.stopAnimation();
     }
 
     pause() {
@@ -450,6 +483,7 @@ class Objects {
     constructor() {
         this.camera = { observer: null };
         this.background = { material: null, mesh: [] };
+        this.foreground = { spriteManager: null, sprite: [] };
         this.gift = { material: null, mesh: [] };
         this.house = {
             spriteManager: {
@@ -459,7 +493,7 @@ class Objects {
             },
             mesh: []
         };
-        this.sleigh = { spriteManager: null, sprite: null, observer: null };
+        this.sleigh = { spriteManager: null, sprite: null };
     }
 
     camera: {
@@ -468,6 +502,10 @@ class Objects {
     background: {
         material: StandardMaterial | null,
         mesh: Array<Mesh>
+    };
+    foreground: {
+        spriteManager: SpriteManager | null,
+        sprite: Array<Sprite>,
     };
     gift: {
         material: StandardMaterial | null,
@@ -480,7 +518,6 @@ class Objects {
     sleigh: {
         spriteManager: SpriteManager | null,
         sprite: Sprite | null,
-        observer: Observer<Mesh> | null
     };
 }
 
