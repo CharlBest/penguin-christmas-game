@@ -1,32 +1,16 @@
-<div class="container full-height">
+<div class="container full-height"
+    style="height: 100%;">
     <button mat-raised-button
         routerLink="/home/menu">
         <mat-icon>menu</mat-icon>
         <span>&nbsp;&nbsp;MENU</span>
     </button>
-    <button mat-raised-button
-        routerLink="/home/level/1">
-        Level 1
-        <span *ngIf="getBestCore(1)">(Best score: {{getBestCore(1)}})</span>
-    </button>
-    <button mat-raised-button
-        routerLink="/home/level/2">
-        Level 2
-        <span *ngIf="getBestCore(2)">(Best score: {{getBestCore(2)}})</span>
-    </button>
-    <button mat-raised-button
-        routerLink="/home/level/3">
-        Level 3
-        <span *ngIf="getBestCore(3)">(Best score: {{getBestCore(3)}})</span>
-    </button>
-    <button mat-raised-button
-        routerLink="/home/level/4">
-        Level 4
-        <span *ngIf="getBestCore(4)">(Best score: {{getBestCore(4)}})</span>
-    </button>
-    <button mat-raised-button
-        routerLink="/home/level/5">
-        Level 5
-        <span *ngIf="getBestCore(5)">(Best score: {{getBestCore(5)}})</span>
-    </button>
+
+    <ng-container *ngFor="let level of levels">
+        <button mat-raised-button
+            routerLink="/home/level/{{level}}">
+            Level {{level}}
+            <span *ngIf="getBestCore(level)">(Best score: {{getBestCore(level)}})</span>
+        </button>
+    </ng-container>
 </div>

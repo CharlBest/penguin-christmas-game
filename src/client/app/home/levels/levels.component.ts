@@ -7,6 +7,9 @@ import { HomeService } from '../home.service';
   styleUrls: ['./levels.component.scss']
 })
 export class LevelsComponent {
+
+  levels = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
   constructor(private homeService: HomeService) { }
 
   getBestCore(id: number) {

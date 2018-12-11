@@ -33,13 +33,14 @@ export class GameService {
     assetManagerProgress = 0;
     score = 0;
     bestScore = 0;
-    levelId: number;
+    level: Level | undefined;
     lastHouseXPosition: number;
 
     constructor(private homeService: HomeService) { }
 
     init(canvas: HTMLCanvasElement, loadingScreenElement: HTMLDivElement, levelId: number) {
-        this.levelId = levelId;
+        this.level = levels.find(x => x.id === levelId);
+
         this.overwriteLevelForTesting();
 
         const createScene = (): void => {
@@ -103,34 +104,38 @@ export class GameService {
     }
 
     overwriteLevelForTesting() {
-        const levelOverride = localStorage.getItem('levels');
+        // TODO: remove this in prod
+        const levelsOverride = localStorage.getItem('levels');
         try {
-            if (levelOverride) {
-                const levelOverrideJSON = JSON.parse(levelOverride);
-                const level = levels.find(x => x.id === levelOverrideJSON.id);
-                if (level) {
-                    level.houses = [];
-                    for (const house of levelOverrideJSON.houses) {
-                        let size: HouseSize;
+            if (levelsOverride) {
+                const levelsOverrideJSON = JSON.parse(levelsOverride) as Array<Level>;
+                levelsOverrideJSON.forEach(levelOverride => {
+                    const level = levels.find(x => x.id === levelOverride.id);
+                    if (level) {
+                        level.speed = levelOverride.speed;
+                        level.houses = [];
+                        for (const house of levelOverride.houses) {
+                            let size: HouseSize;
 
-                        switch (house.size) {
-                            case 'small':
-                                size = HouseSize.small;
-                                break;
-                            case 'medium':
-                                size = HouseSize.medium;
-                                break;
-                            case 'large':
-                                size = HouseSize.large;
-                                break;
+                            switch ((<any>house).size) {
+                                case 'small':
+                                    size = HouseSize.small;
+                                    break;
+                                case 'medium':
+                                    size = HouseSize.medium;
+                                    break;
+                                case 'large':
+                                    size = HouseSize.large;
+                                    break;
 
-                            default:
-                                break;
+                                default:
+                                    break;
+                            }
+
+                            level.houses.push(new House(size!, (<any>house).position));
                         }
-
-                        level.houses.push(new House(size!, house.position));
                     }
-                }
+                });
             }
         } catch {
             console.log('Not valid JSON');
@@ -220,12 +225,11 @@ export class GameService {
         this.objects.house.spriteManager.large = new SpriteManager('largeHouseSpriteManager', 'assets/game/images/large-house.png',
             30, { width: HouseSize.large.width * 100, height: HouseSize.large.fullHeight * 100 }, this.scene);
 
-        const level = levels.find(x => x.id === this.levelId);
-        if (level) {
+        if (this.level) {
             // Set previous house widths
             let previousHousePosition = 0;
             let previousHouseWidth = 0;
-            level.houses.forEach(x => {
+            this.level.houses.forEach(x => {
                 x.previousHousePosition = previousHousePosition + (previousHouseWidth / 2) + (x.size.width / 2) + x.xPosition;
 
                 previousHouseWidth = x.size.width;
@@ -233,7 +237,7 @@ export class GameService {
             });
             this.lastHouseXPosition = previousHousePosition;
 
-            for (const house of level.houses) {
+            for (const house of this.level.houses) {
                 this.createHouse(house);
             }
         }
@@ -419,15 +423,14 @@ export class GameService {
     }
 
     activateAutoHorizontalScroll() {
-        const speed = 0.04;
         const finishXPosition = this.lastHouseXPosition + 3 /*half sled width*/ + 6 /*full sled width*/;
 
         // Sled sprite animation
         this.objects.sleigh.sprite!.playAnimation(0, 4, true, 100, () => { });
 
         this.objects.camera.observer = this.scene.onBeforeRenderObservable.add(() => {
-            this.objects.sleigh.sprite!.position.x += Math.sin(speed);
-            this.camera.position.x += Math.sin(speed);
+            this.objects.sleigh.sprite!.position.x += Math.sin(this.level!.speed);
+            this.camera.position.x += Math.sin(this.level!.speed);
 
             if (this.camera.position.x > finishXPosition) {
                 this.onFinish();
@@ -582,10 +585,17 @@ class HouseSize {
     chimneyPosition: number;
 }
 
+class Level {
+    id: number;
+    speed: number;
+    houses: Array<House>;
+}
 
-const levels = [
+
+const levels: Array<Level> = [
     {
         id: 1,
+        speed: 0.04,
         houses: [
             new House(HouseSize.small, 3),
             new House(HouseSize.small, 2),
@@ -611,6 +621,7 @@ const levels = [
     },
     {
         id: 2,
+        speed: 0.04,
         houses: [
             new House(HouseSize.small, 3),
             new House(HouseSize.small, 2),
@@ -636,6 +647,7 @@ const levels = [
     },
     {
         id: 3,
+        speed: 0.04,
         houses: [
             new House(HouseSize.small, 3),
             new House(HouseSize.small, 2),
@@ -661,6 +673,7 @@ const levels = [
     },
     {
         id: 4,
+        speed: 0.04,
         houses: [
             new House(HouseSize.small, 3),
             new House(HouseSize.small, 2),
@@ -686,6 +699,137 @@ const levels = [
     },
     {
         id: 5,
+        speed: 0.04,
+        houses: [
+            new House(HouseSize.small, 3),
+            new House(HouseSize.small, 2),
+            new House(HouseSize.medium, 2),
+            new House(HouseSize.small, 2),
+            new House(HouseSize.medium, 2),
+            new House(HouseSize.large, 2),
+            new House(HouseSize.small, 2),
+            new House(HouseSize.large, 2),
+            new House(HouseSize.large, 1),
+            new House(HouseSize.medium, 2),
+            new House(HouseSize.small, 3),
+            new House(HouseSize.small, 2),
+            new House(HouseSize.medium, 2),
+            new House(HouseSize.small, 2),
+            new House(HouseSize.medium, 2),
+            new House(HouseSize.large, 2),
+            new House(HouseSize.small, 2),
+            new House(HouseSize.large, 2),
+            new House(HouseSize.large, 1),
+            new House(HouseSize.medium, 2),
+        ]
+    },
+    {
+        id: 6,
+        speed: 0.04,
+        houses: [
+            new House(HouseSize.small, 3),
+            new House(HouseSize.small, 2),
+            new House(HouseSize.medium, 2),
+            new House(HouseSize.small, 2),
+            new House(HouseSize.medium, 2),
+            new House(HouseSize.large, 2),
+            new House(HouseSize.small, 2),
+            new House(HouseSize.large, 2),
+            new House(HouseSize.large, 1),
+            new House(HouseSize.medium, 2),
+            new House(HouseSize.small, 3),
+            new House(HouseSize.small, 2),
+            new House(HouseSize.medium, 2),
+            new House(HouseSize.small, 2),
+            new House(HouseSize.medium, 2),
+            new House(HouseSize.large, 2),
+            new House(HouseSize.small, 2),
+            new House(HouseSize.large, 2),
+            new House(HouseSize.large, 1),
+            new House(HouseSize.medium, 2),
+        ]
+    },
+    {
+        id: 7,
+        speed: 0.04,
+        houses: [
+            new House(HouseSize.small, 3),
+            new House(HouseSize.small, 2),
+            new House(HouseSize.medium, 2),
+            new House(HouseSize.small, 2),
+            new House(HouseSize.medium, 2),
+            new House(HouseSize.large, 2),
+            new House(HouseSize.small, 2),
+            new House(HouseSize.large, 2),
+            new House(HouseSize.large, 1),
+            new House(HouseSize.medium, 2),
+            new House(HouseSize.small, 3),
+            new House(HouseSize.small, 2),
+            new House(HouseSize.medium, 2),
+            new House(HouseSize.small, 2),
+            new House(HouseSize.medium, 2),
+            new House(HouseSize.large, 2),
+            new House(HouseSize.small, 2),
+            new House(HouseSize.large, 2),
+            new House(HouseSize.large, 1),
+            new House(HouseSize.medium, 2),
+        ]
+    },
+    {
+        id: 8,
+        speed: 0.04,
+        houses: [
+            new House(HouseSize.small, 3),
+            new House(HouseSize.small, 2),
+            new House(HouseSize.medium, 2),
+            new House(HouseSize.small, 2),
+            new House(HouseSize.medium, 2),
+            new House(HouseSize.large, 2),
+            new House(HouseSize.small, 2),
+            new House(HouseSize.large, 2),
+            new House(HouseSize.large, 1),
+            new House(HouseSize.medium, 2),
+            new House(HouseSize.small, 3),
+            new House(HouseSize.small, 2),
+            new House(HouseSize.medium, 2),
+            new House(HouseSize.small, 2),
+            new House(HouseSize.medium, 2),
+            new House(HouseSize.large, 2),
+            new House(HouseSize.small, 2),
+            new House(HouseSize.large, 2),
+            new House(HouseSize.large, 1),
+            new House(HouseSize.medium, 2),
+        ]
+    },
+    {
+        id: 9,
+        speed: 0.04,
+        houses: [
+            new House(HouseSize.small, 3),
+            new House(HouseSize.small, 2),
+            new House(HouseSize.medium, 2),
+            new House(HouseSize.small, 2),
+            new House(HouseSize.medium, 2),
+            new House(HouseSize.large, 2),
+            new House(HouseSize.small, 2),
+            new House(HouseSize.large, 2),
+            new House(HouseSize.large, 1),
+            new House(HouseSize.medium, 2),
+            new House(HouseSize.small, 3),
+            new House(HouseSize.small, 2),
+            new House(HouseSize.medium, 2),
+            new House(HouseSize.small, 2),
+            new House(HouseSize.medium, 2),
+            new House(HouseSize.large, 2),
+            new House(HouseSize.small, 2),
+            new House(HouseSize.large, 2),
+            new House(HouseSize.large, 1),
+            new House(HouseSize.medium, 2),
+        ]
+    },
+    {
+        id: 10,
+        speed: 0.04,
         houses: [
             new House(HouseSize.small, 3),
             new House(HouseSize.small, 2),
