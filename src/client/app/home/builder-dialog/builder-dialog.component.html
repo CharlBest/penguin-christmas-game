@@ -7,7 +7,7 @@
         Level {{level.id}}
       </mat-panel-title>
       <mat-panel-description>
-        Speed = {{level.speed}}
+        Speed = {{level.speed}} AND Gift size = {{level.giftSize}}
       </mat-panel-description>
     </mat-expansion-panel-header>
 
@@ -16,6 +16,12 @@
       max="0.1"
       step="0.01"
       [(ngModel)]="level.speed"></mat-slider>
+    <br>
+    <span>gift size</span>
+    <mat-slider min="0.1"
+      max="1"
+      step="0.1"
+      [(ngModel)]="level.giftSize"></mat-slider>
 
     <mat-card *ngFor="let house of level.houses; let i = index">
       <mat-card-subtitle>House {{i + 1}}</mat-card-subtitle>

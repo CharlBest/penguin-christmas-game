@@ -121,6 +121,7 @@ export class GameService {
                     const level = this.configService.levels.find(x => x.id === levelOverride.id);
                     if (level) {
                         level.speed = levelOverride.speed;
+                        level.giftSize = levelOverride.giftSize;
                         level.houses = [];
                         for (const house of levelOverride.houses) {
                             level.houses.push(this.configService.createHouse((<any>house).size, (<any>house).position));
@@ -244,7 +245,7 @@ export class GameService {
     createHouse(house: House) {
         // Mesh
         const mesh = MeshBuilder
-            .CreateBox(`housePlane-${this.objects.house.mesh.length + 1}`,
+            .CreateBox(`houseBox-${this.objects.house.mesh.length + 1}`,
                 { width: house.size.width, height: house.size.fullHeight }, this.scene);
         // mesh.material = this.objects.house.material[house.size.name];
         mesh.position.x = house.previousHousePosition;
@@ -261,7 +262,7 @@ export class GameService {
 
         // House collision wrapper
         const houseCollisionMesh = MeshBuilder
-            .CreateBox(`housePlane-${this.objects.house.mesh.length + 1}-inner`,
+            .CreateBox(`houseBox-${this.objects.house.mesh.length + 1}-inner`,
                 { width: house.size.width, height: house.size.height, depth: 4 }, this.scene);
         houseCollisionMesh.position.y = (house.size.fullHeight - house.size.height) / 2 * -1;
         houseCollisionMesh.visibility = 0;
@@ -277,7 +278,7 @@ export class GameService {
 
         // Create Gift Drop Zone
         const dropZone = MeshBuilder
-            .CreateGround(`dropZonePlane-${this.objects.house.mesh.length + 1}`, { width: 1, height: 4 }, this.scene);
+            .CreateGround(`dropZoneGround-${this.objects.house.mesh.length + 1}`, { width: 1, height: 4 }, this.scene);
         dropZone.position.x = (house.size.width / 2 * -1) + house.size.chimneyPosition + 0.5 /*half ground width*/;
         dropZone.position.y = (house.size.height / 2);
         dropZone.parent = mesh;
@@ -323,12 +324,12 @@ export class GameService {
     createSleigh() {
         // Load
         this.objects.sleigh.spriteManager = new SpriteManager('sleighSpriteManager', 'assets/game/images/sleigh.png',
-            1, { width: 677, height: 155 }, this.scene);
+            1, { width: 600, height: 150 }, this.scene);
 
         // Sprite
         const sprite = new Sprite(`sleighSprite`, this.objects.sleigh.spriteManager!);
-        sprite.width = 6.77;
-        sprite.height = 1.55;
+        sprite.width = 6;
+        sprite.height = 1.5;
         sprite.position.x = -1;
         sprite.position.y = 4;
 
@@ -341,7 +342,7 @@ export class GameService {
     createBackground(x: number) {
         // Mesh
         const mesh = MeshBuilder
-            .CreateBox(`backgroundPlane-${this.objects.background.mesh.length + 1}`, { width: 18, height: 10 }, this.scene);
+            .CreateBox(`backgroundBox-${this.objects.background.mesh.length + 1}`, { width: 18, height: 10 }, this.scene);
 
         mesh.material = this.objects.background.material;
         mesh.position.x = x;
@@ -366,7 +367,7 @@ export class GameService {
 
     createGiftMesh() {
         const mesh = MeshBuilder
-            .CreateBox(`sourceGiftPlane`, { size: 0.5 }, this.scene);
+            .CreateBox(`sourceGiftBox`, { size: this.level!.giftSize }, this.scene);
         mesh.material = this.objects.gift.material;
         mesh.position.y = -10;
 
@@ -376,7 +377,7 @@ export class GameService {
 
     createGift(x: number) {
         // Mesh
-        const mesh = this.objects.gift.sourceMesh!.clone(`giftPlane-${this.objects.gift.mesh.length + 1}`, undefined, false, false);
+        const mesh = this.objects.gift.sourceMesh!.clone(`giftBox-${this.objects.gift.mesh.length + 1}`, undefined, false, false);
         mesh.position.x = x - 2;
         mesh.position.y = 3.5;
         // TODO: fix gift going behind the house
@@ -395,7 +396,7 @@ export class GameService {
         this.objects.gift.mesh.push(mesh);
 
         // GLTF object
-        // const gift = this.objects.gift.mesh[0].clone(`giftPlane-${this.objects.gift.mesh.length + 1}`, null);
+        // const gift = this.objects.gift.mesh[0].clone(`giftBox-${this.objects.gift.mesh.length + 1}`, null);
         // gift.position.x = x - 2;
         // gift.position.y = 3.5;
     }

@@ -47,6 +47,7 @@ export class BuilderDialogComponent implements OnInit {
       const newLevel = {
         id: level.id,
         speed: level.speed,
+        giftSize: level.giftSize,
         houses: new Array()
       };
       for (const house of level.houses) {

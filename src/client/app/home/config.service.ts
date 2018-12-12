@@ -40,6 +40,7 @@ const levels: Array<Level> = [
     {
         id: 1,
         speed: 0.04,
+        giftSize: 0.5,
         houses: [
             new House(HouseSize.small, 3),
             new House(HouseSize.small, 2),
@@ -66,6 +67,7 @@ const levels: Array<Level> = [
     {
         id: 2,
         speed: 0.04,
+        giftSize: 0.5,
         houses: [
             new House(HouseSize.small, 3),
             new House(HouseSize.small, 2),
@@ -92,6 +94,7 @@ const levels: Array<Level> = [
     {
         id: 3,
         speed: 0.04,
+        giftSize: 0.5,
         houses: [
             new House(HouseSize.small, 3),
             new House(HouseSize.small, 2),
@@ -118,6 +121,7 @@ const levels: Array<Level> = [
     {
         id: 4,
         speed: 0.04,
+        giftSize: 0.5,
         houses: [
             new House(HouseSize.small, 3),
             new House(HouseSize.small, 2),
@@ -144,6 +148,7 @@ const levels: Array<Level> = [
     {
         id: 5,
         speed: 0.04,
+        giftSize: 0.5,
         houses: [
             new House(HouseSize.small, 3),
             new House(HouseSize.small, 2),
@@ -170,6 +175,7 @@ const levels: Array<Level> = [
     {
         id: 6,
         speed: 0.04,
+        giftSize: 0.5,
         houses: [
             new House(HouseSize.small, 3),
             new House(HouseSize.small, 2),
@@ -196,6 +202,7 @@ const levels: Array<Level> = [
     {
         id: 7,
         speed: 0.04,
+        giftSize: 0.5,
         houses: [
             new House(HouseSize.small, 3),
             new House(HouseSize.small, 2),
@@ -222,6 +229,7 @@ const levels: Array<Level> = [
     {
         id: 8,
         speed: 0.04,
+        giftSize: 0.5,
         houses: [
             new House(HouseSize.small, 3),
             new House(HouseSize.small, 2),
@@ -248,6 +256,7 @@ const levels: Array<Level> = [
     {
         id: 9,
         speed: 0.04,
+        giftSize: 0.5,
         houses: [
             new House(HouseSize.small, 3),
             new House(HouseSize.small, 2),
@@ -274,6 +283,7 @@ const levels: Array<Level> = [
     {
         id: 10,
         speed: 0.04,
+        giftSize: 0.5,
         houses: [
             new House(HouseSize.small, 3),
             new House(HouseSize.small, 2),
