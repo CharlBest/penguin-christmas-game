@@ -6,17 +6,20 @@
         <span>{{gameService.score}} points</span>
     </div>
 
-    <button mat-icon-button>
-        <mat-icon (click)="openMenu()">pause_circle_outline</mat-icon>
+    <button mat-icon-button
+        (click)="openMenu()">
+        <mat-icon>pause_circle_outline</mat-icon>
     </button>
 
     <button mat-icon-button
-        *ngIf="homeService?.data?.settings.disableAudio">
-        <mat-icon (click)="homeService.enableAudio()">volume_off</mat-icon>
+        *ngIf="homeService?.data?.settings.disableAudio"
+        (click)="homeService.enableAudio()">
+        <mat-icon>volume_off</mat-icon>
     </button>
     <button mat-icon-button
-        *ngIf="!homeService?.data?.settings.disableAudio">
-        <mat-icon (click)="homeService.disableAudio()">volume_up</mat-icon>
+        *ngIf="!homeService?.data?.settings.disableAudio"
+        (click)="homeService.disableAudio()">
+        <mat-icon>volume_up</mat-icon>
     </button>
 </div>
 
