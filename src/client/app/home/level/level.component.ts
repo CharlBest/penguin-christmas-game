@@ -57,10 +57,10 @@ export class LevelComponent implements OnInit, AfterViewInit, OnDestroy {
         }
       }
     });
+    this.gameService.init(this.canvas.nativeElement, this.loadingScreen.nativeElement, +this.route.snapshot.params['id']);
   }
 
   ngAfterViewInit() {
-    this.gameService.init(this.canvas.nativeElement, this.loadingScreen.nativeElement, +this.route.snapshot.params['id']);
   }
 
   openMenu() {

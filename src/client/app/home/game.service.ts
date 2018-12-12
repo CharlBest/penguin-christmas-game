@@ -40,14 +40,15 @@ export class GameService {
     score = 0;
     bestScore = 0;
     level: Level | undefined;
-    lastHouseXPosition: number;
+    lastHouseXPosition: number | undefined;
+    isFinished = false;
 
     constructor(private homeService: HomeService,
         private configService: ConfigService) { }
 
     init(canvas: HTMLCanvasElement, loadingScreenElement: HTMLDivElement, levelId: number) {
+        this.initVars();
         this.level = this.configService.levels.find(x => x.id === levelId);
-
         this.overwriteLevelForTesting();
 
         const createScene = (): void => {
@@ -109,6 +110,17 @@ export class GameService {
         window.addEventListener('resize', () => {
             this.engine.resize();
         });
+    }
+
+    initVars() {
+        this.assets = new Assets();
+        this.objects = new Objects();
+
+        this.assetManagerProgress = 0;
+        this.score = 0;
+        this.level = undefined;
+        this.lastHouseXPosition = undefined;
+        this.isFinished = false;
     }
 
     overwriteLevelForTesting() {
@@ -434,7 +446,7 @@ export class GameService {
     }
 
     activateAutoHorizontalScroll() {
-        const finishXPosition = this.lastHouseXPosition + 3 /*half sled width*/ + 6 /*full sled width*/;
+        const finishXPosition = this.lastHouseXPosition! + 3 /*half sled width*/ + 6 /*full sled width*/;
 
         // Sled sprite animation
         this.objects.sleigh.sprite!.playAnimation(0, 4, true, 100, () => { });
@@ -444,7 +456,10 @@ export class GameService {
             this.camera.position.x += Math.sin(this.level!.speed);
 
             if (this.camera.position.x > finishXPosition) {
-                this.onFinish();
+                if (!this.isFinished) {
+                    this.isFinished = true;
+                    this.onFinish();
+                }
             }
         });
     }
@@ -479,6 +494,9 @@ export class GameService {
         this.objects.house.spriteManager.small!.sprites.forEach(x => x.cellIndex = 0);
         this.objects.house.spriteManager.medium!.sprites.forEach(x => x.cellIndex = 0);
         this.objects.house.spriteManager.large!.sprites.forEach(x => x.cellIndex = 0);
+
+        // Finised
+        this.isFinished = false;
 
         this.activateAutoHorizontalScroll();
     }
