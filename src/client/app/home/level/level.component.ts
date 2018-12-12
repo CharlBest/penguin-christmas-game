@@ -35,6 +35,8 @@ export class LevelComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     });
 
+    this.gameService.init(this.canvas.nativeElement, this.loadingScreen.nativeElement, +this.route.snapshot.params['id']);
+
     this.gameService.finished.subscribe((score: number) => {
       const dialogRef = this.dialog.open(FinishDialogComponent, { disableClose: true });
       dialogRef.componentInstance.score = score;
@@ -57,10 +59,6 @@ export class LevelComponent implements OnInit, AfterViewInit, OnDestroy {
         }
       }
     });
-    this.gameService.init(this.canvas.nativeElement, this.loadingScreen.nativeElement, +this.route.snapshot.params['id']);
-  }
-
-  ngAfterViewInit() {
   }
 
   openMenu() {
