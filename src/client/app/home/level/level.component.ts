@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { ActivatedRoute } from '@angular/router';
 import { FinishDialogComponent } from '../finish-dialog/finish-dialog.component';
@@ -11,7 +11,7 @@ import { MenuDialogComponent } from '../menu-dialog/menu-dialog.component';
   templateUrl: './level.component.html',
   styleUrls: ['./level.component.scss']
 })
-export class LevelComponent implements OnInit, AfterViewInit, OnDestroy {
+export class LevelComponent implements OnInit, OnDestroy {
   @ViewChild('canvas') canvas: ElementRef<HTMLCanvasElement>;
   @ViewChild('loadingScreen') loadingScreen: ElementRef<HTMLDivElement>;
   levelId: number;
