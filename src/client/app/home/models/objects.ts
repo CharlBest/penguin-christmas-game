@@ -6,7 +6,7 @@ export class Objects {
         this.camera = { observer: null };
         this.background = { material: null, mesh: [] };
         this.foreground = { spriteManager: null, sprite: [] };
-        this.gift = { material: null, mesh: [] };
+        this.gift = { material: null, sourceMesh: null, mesh: [] };
         this.house = {
             spriteManager: {
                 small: null,
@@ -31,6 +31,7 @@ export class Objects {
     };
     gift: {
         material: StandardMaterial | null,
+        sourceMesh: Mesh | null,
         mesh: Array<Mesh>
     };
     house: {

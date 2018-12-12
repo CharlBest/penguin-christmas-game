@@ -85,6 +85,7 @@ export class GameService {
             this.onPointerEvents();
 
             // Physics
+            // this.scene.enablePhysics(new Vector3(0, -9.81, 0), new OimoJSPlugin());
             this.scene.enablePhysics(new Vector3(0, -9.81, 0));
 
             // Load Assets
@@ -164,6 +165,8 @@ export class GameService {
             this.objects.gift.material = new StandardMaterial('giftMaterial', this.scene);
             this.objects.gift.material.diffuseTexture = task.texture;
             this.objects.gift.material.opacityTexture = task.texture;
+
+            this.createGiftMesh();
         };
 
         this.createSleigh();
@@ -291,7 +294,9 @@ export class GameService {
                 const giftMesh = this.objects.gift.mesh.find(y => y.id === collidedWith.object['id']);
                 if (giftMesh) {
                     smallHouseSprite.cellIndex = 1;
-                    giftMesh.visibility = 0;
+                    setTimeout(() => {
+                        giftMesh.dispose();
+                    }, 1);
                 }
             }
         };
@@ -359,22 +364,35 @@ export class GameService {
         this.objects.foreground.sprite.push(sprite);
     }
 
+    createGiftMesh() {
+        const mesh = MeshBuilder
+            .CreateBox(`sourceGiftPlane`, { size: 0.5 }, this.scene);
+        mesh.material = this.objects.gift.material;
+        mesh.position.y = -10;
+
+        // Save
+        this.objects.gift.sourceMesh = mesh;
+    }
+
     createGift(x: number) {
         // Mesh
-        const mesh = MeshBuilder
-            .CreateBox(`giftPlane-${this.objects.gift.mesh.length + 1}`, { size: 0.7 }, this.scene);
-        mesh.material = this.objects.gift.material;
+        const mesh = this.objects.gift.sourceMesh!.clone(`giftPlane-${this.objects.gift.mesh.length + 1}`, undefined, false, false);
         mesh.position.x = x - 2;
         mesh.position.y = 3.5;
         // TODO: fix gift going behind the house
         mesh.position.z = 2;
 
-        // Save
-        this.objects.gift.mesh.push(mesh);
-
         // Physics
         mesh.physicsImpostor =
             new PhysicsImpostor(mesh, PhysicsImpostor.BoxImpostor, { mass: 1, restitution: 0.9 }, this.scene);
+
+        // Destory
+        setTimeout(() => {
+            mesh.dispose();
+        }, 4000);
+
+        // Save
+        this.objects.gift.mesh.push(mesh);
 
         // GLTF object
         // const gift = this.objects.gift.mesh[0].clone(`giftPlane-${this.objects.gift.mesh.length + 1}`, null);
