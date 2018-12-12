@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import { ConfigService } from '../config.service';
 import { House } from '../models/house';
 import { Level } from '../models/level';
@@ -11,33 +10,23 @@ import { Level } from '../models/level';
 })
 export class BuilderDialogComponent implements OnInit {
 
-  levelId: number;
+  level: Level;
   exportData: string | null;
 
-  constructor(public configService: ConfigService,
-    private route: ActivatedRoute) { }
+  constructor(private configService: ConfigService) { }
 
   ngOnInit() {
     // HACK!!
-    this.levelId = +window.location.pathname.substring(window.location.pathname.lastIndexOf('/') + 1, window.location.pathname.length);
+    const levelId = +window.location.pathname.substring(window.location.pathname.lastIndexOf('/') + 1, window.location.pathname.length);
+    this.level = this.configService.levels.find(x => x.id === levelId)!;
   }
 
-  addHouse(level: Level) {
-    const localLevel = this.configService.levels.find(x => x.id === level.id);
-    if (localLevel) {
-      localLevel.houses.push(this.configService.createHouse('small', 1));
-    }
+  addHouse() {
+    this.level.houses.push(this.configService.createHouse('small', 1));
   }
 
-  removeHouse(level: Level, index: number) {
-    const localLevel = this.configService.levels.find(x => x.id === level.id);
-    if (localLevel) {
-      localLevel.houses.splice(index, 1);
-    }
-  }
-
-  addLevel() {
-    this.configService.levels.push(new Level(this.configService.levels.length + 1));
+  removeHouse(index: number) {
+    this.level.houses.splice(index, 1);
   }
 
   save() {

@@ -295,8 +295,9 @@ export class GameService {
                 const giftMesh = this.objects.gift.mesh.find(y => y.id === collidedWith.object['id']);
                 if (giftMesh) {
                     smallHouseSprite.cellIndex = 1;
-                    setTimeout(() => {
+                    const timeoutId = setTimeout(() => {
                         giftMesh.dispose();
+                        clearTimeout(timeoutId);
                     }, 1);
                 }
             }
@@ -388,8 +389,9 @@ export class GameService {
             new PhysicsImpostor(mesh, PhysicsImpostor.BoxImpostor, { mass: 1, restitution: 0.9 }, this.scene);
 
         // Destory
-        setTimeout(() => {
+        const timeoutId = setTimeout(() => {
             mesh.dispose();
+            clearTimeout(timeoutId);
         }, 4000);
 
         // Save
