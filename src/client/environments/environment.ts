@@ -16,7 +16,7 @@ export const environment = {
   httpDomain: '',
   googleAnalytics: {
     web: 'UA-107304143-1',
-    ios: 'UA-102909242-6',
+    mobile: 'UA-102909242-6',
     chromeExtension: 'UA-102909242-7'
   },
   firebase: {

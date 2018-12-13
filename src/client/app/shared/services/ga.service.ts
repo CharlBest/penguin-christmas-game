@@ -63,8 +63,8 @@ export class GaService {
 
     if (window['appType'] === 'web') {
       this.ga('create', environment.googleAnalytics.web, 'auto');
-    } else if (window['appType'] === 'ios') {
-      this.ga('create', environment.googleAnalytics.ios, 'auto');
+    } else if (window['appType'] === 'mobile') {
+      this.ga('create', environment.googleAnalytics.mobile, 'auto');
     } else if (window['appType'] === 'chromeextension') {
       this.ga('create', environment.googleAnalytics.chromeExtension, 'auto');
     }

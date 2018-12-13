@@ -67,6 +67,37 @@
               ],
               "serviceWorker": true
             },
+            "production-mobile": {
+              "fileReplacements": [
+                {
+                  "replace": "src/client/environments/environment.ts",
+                  "with": "src/client/environments/environment.prod.ts"
+                },
+                {
+                  "replace": "src/client/index.html",
+                  "with": "src/client/index.mobile.html"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                }
+              ],
+              "serviceWorker": false,
+              "baseHref": "./",
+              "outputPath": "src/client-mobile/www"
+            },
             "development": {
               "fileReplacements": [
                 {

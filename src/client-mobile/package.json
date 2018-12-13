@@ -1,1 +1,0 @@
-{"name":"com.example.hello","version":"1.0.0","displayName":"HelloWorld","cordova":{"platforms":["android","ios"]},"dependencies":{"cordova-android":"~7.1.4","cordova-ios":"~4.5.5"}}

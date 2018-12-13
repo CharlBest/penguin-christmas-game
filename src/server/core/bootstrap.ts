@@ -148,7 +148,7 @@ class Bootstrap {
                 ? [
                     'http://localhost:4200' /*Dev web client*/,
                     'http://localhost:3000' /*Web client*/,
-                    'http://localhost:8000' /*IOS client*/,
+                    'http://localhost:8000' /*Native mobile client*/,
                     'http://10.0.0.10:3000' /*Phone client*/
                 ]
                 : [

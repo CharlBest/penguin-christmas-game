@@ -933,3 +933,79 @@ gcloud compute scp --recurse <FROM_DIR> <USERNAME>@<VM_INSTANCE_NAME>:/var/www/n
 ## Top things to check
 
 Source: https://hashnode.com/post/10-things-you-shouldnt-do-while-running-nodejs-in-production-cisab2fyu0s9oth5341faywcw
+
+
+
+# Setup Cordova
+### Source: https://medium.com/@nacojohn/convert-your-angular-project-to-mobile-app-using-cordova-f0384a7711a6
+
+## Install
+
+1. Install Node + NPM
+
+2. Install Cordova CLI globally
+```sh
+npm install -g cordova
+```
+
+3. Install packages
+```sh
+cordova create src/client-mobile com.example.hello client-mobile
+```
+
+#### Breakdown:
+* cordova: cli name
+* create: create new app
+* path + folder name: optional path with folder it should be created in
+* com.example.hello: Reverse domain-style identifier that maps to id attribute of widget element in config.xml
+* client-mobile: the application name
+
+5. Go to client-mobile folder
+```sh
+cd src/client-mobile
+```
+
+4. Add platform
+```sh
+cordova platform add android
+
+cordova platform add ios
+```
+
+#### Breakdown:
+* platform: add native platforms you want to compile into
+* android: name of platfrom. Can be either android, ios or blackberry 
+
+5. Merge package.json and delete then delete package.json, package-lock.json and node_modules within client-mobile
+
+6. Add platforms, plugins and www folder to .gitignore
+```sh
+# Cordova
+src/client-mobile/platforms
+src/client-mobile/plugins
+src/client-mobile/www
+```
+
+7. NPM install
+```sh
+npm install
+```
+
+8. Create index.mobile.html file
+9. Add another build configuration in angular.json
+   * Replace index.html with index.mobile.html
+   * "serviceWorker": false
+   * "baseHref": "./"
+   * "outputPath": "src/client-mobile/www"
+
+10. Install pre-requisites for building
+    * Android: https://cordova.apache.org/docs/en/8.x/guide/platforms/android/index.html#requirements-and-support
+        * Java Development Kit (JDK)
+        * Gradle
+        * Android Studio
+    * IOS: https://cordova.apache.org/docs/en/8.x/guide/platforms/ios/index.html#requirements-and-support
+
+11. Build
+```sh
+cd src/client-mobile && cordova build android && cd ../..
+```
