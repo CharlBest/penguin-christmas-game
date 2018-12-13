@@ -43,3 +43,4 @@ Thumbs.db
 src/client-mobile/platforms
 src/client-mobile/plugins
 src/client-mobile/www
+src/client-mobile/package.json

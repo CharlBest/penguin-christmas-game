@@ -1002,7 +1002,7 @@ npm install
     * Android: https://cordova.apache.org/docs/en/8.x/guide/platforms/android/index.html#requirements-and-support
         * Java Development Kit (JDK)
         * Gradle
-        * Android Studio
+        * Android Studio (with SDK)
     * IOS: https://cordova.apache.org/docs/en/8.x/guide/platforms/ios/index.html#requirements-and-support
 
 11. Build
