@@ -1,6 +1,6 @@
 {
   "name": "nean-stack-starter",
-  "version": "0.0.873",
+  "version": "0.0.874",
   "description": "A sample Angular, Node.js and Neo4j demo app",
   "license": "MIT",
   "repository": {
@@ -16,7 +16,8 @@
     "dev": "concurrently \"npm run start:client:watch\" \"npm run build:server:watch\" \"npm run start:server:watch\"",
     "build": "ng build --configuration=production && webpack --mode=production",
     "build:mobile": "ng build --configuration=production-mobile",
-    "build:mobile:native": "cd src/client-mobile && cordova build android && cd ../..",
+    "build:mobile:android": "cd src/client-mobile && cordova build android && cd ../..",
+    "build:mobile:ios": "cd src/client-mobile && cordova build android && cd ../..",
     "build:dev": "ng build --configuration=development && webpack --mode=production",
     "build:server:watch": "webpack --mode=development --watch",
     "start": "node --max_semi_space_size=2 --max_old_space_size=256 dist/server/web/web.bundle.js",
@@ -24,6 +25,8 @@
     "start:worker:watch": "nodemon --max_semi_space_size=2 --max_old_space_size=256 dist/server/worker/worker.bundle.js",
     "start:client:watch": "ng serve --aot",
     "start:server:watch": "nodemon --inspect --max_semi_space_size=2 --max_old_space_size=256 dist/server/web/web.bundle.js",
+    "start:mobile:android": "cd src/client-mobile && cordova emulate android && cd ../..",
+    "start:mobile:ios": "cd src/client-mobile && cordova emulate ios && cd ../..",
     "ng": "ng",
     "test": "echo \"Error: no test... minimal project\" && exit 1",
     "lint": "ng lint",
