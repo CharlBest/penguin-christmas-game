@@ -1,0 +1,102 @@
+.bg {
+	background-image: url("/assets/game/images/home-background.svg");
+	background-size: cover;
+	background-repeat: no-repeat;
+
+	img:first-child {
+		height: 36%;
+	}
+
+	img {
+		height: 12%;
+		z-index: 1;
+	}
+
+	.volume-buttons {
+		position: absolute;
+		right: 6%;
+		height: calc(100% - 12%);
+		z-index: 1;
+
+		img {
+			height: 12%;
+		}
+	}
+
+	.falling-gifts {
+		position: absolute;
+		height: 100%;
+		width: 100%;
+		z-index: 0;
+		display: flex;
+		justify-content: space-around;
+
+		img {
+			top: -15%;
+			height: 12%;
+			position: relative;
+			outline: none;
+		}
+
+		img:nth-of-type(n) {
+			animation: falling 10s linear infinite;
+			animation-delay: 3.8s;
+		}
+
+		img:nth-of-type(2n) {
+			animation: falling2 10s linear infinite;
+			animation-delay: 7.8s;
+		}
+
+		img:nth-of-type(3n) {
+			animation: falling3 10s linear infinite;
+			animation-delay: 4.6s;
+		}
+
+		img:nth-of-type(4n) {
+			animation: falling2 10s linear infinite;
+			animation-delay: 8.8s;
+		}
+
+		img:nth-of-type(5n) {
+			animation: falling 10s linear infinite;
+			animation-delay: 10s;
+		}
+
+		@keyframes falling {
+			0% {
+				transform: rotate(0deg);
+				top: -15%;
+			}
+
+			100% {
+				transform: rotate(90deg);
+				top: 100%;
+			}
+		}
+
+		@keyframes falling2 {
+			0% {
+				transform: rotate(90deg);
+				top: -15%;
+			}
+
+			100% {
+				transform: rotate(0deg);
+				top: 100%;
+			}
+		}
+
+		@keyframes falling3 {
+			0% {
+				transform: rotate(-20deg);
+				top: -15%;
+			}
+
+			100% {
+				transform: rotate(-70deg);
+				top: 100%;
+			}
+		}
+	}
+}

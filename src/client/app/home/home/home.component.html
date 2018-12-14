@@ -1,27 +1,29 @@
-<div class="container full-height">
-    <button mat-raised-button
-        routerLink="/home/levels">
-        <mat-icon>play_arrow</mat-icon>
-        <span>&nbsp;&nbsp;PLAY</span>
-    </button>
-    <button mat-raised-button
-        routerLink="/home/settings">
-        <mat-icon>settings</mat-icon>
-        <span>&nbsp;&nbsp;OPTIONS</span>
-    </button>
-    <button mat-raised-button
-        (click)="share()">
-        <mat-icon>share</mat-icon>
-        <span>&nbsp;&nbsp;SHARE</span>
-    </button>
-    <button mat-raised-button
-        routerLink="/payment">
-        <mat-icon>credit_card</mat-icon>
-        <span>&nbsp;&nbsp;DONATE</span>
-    </button>
-    <button mat-raised-button
-        routerLink="/home/store">
-        <mat-icon>store</mat-icon>
-        <span>&nbsp;&nbsp;STORE</span>
-    </button>
+<div class="container full-height bg">
+    <img src="assets/game/images/logo.svg" />
+
+    <img src="assets/game/images/buttons/play.svg"
+        (click)="play()" />
+    <img src="assets/game/images/buttons/share.svg"
+        (click)="share()" />
+    <img src="assets/game/images/buttons/donate.svg"
+        routerLink="/payment" />
+    <img src="assets/game/images/buttons/store.svg"
+        routerLink="/home/store" />
+
+    <div class="volume-buttons">
+        <img src="assets/game/images/buttons/mute.svg"
+            *ngIf="!homeService?.data?.settings.disableAudio"
+            (click)="homeService.disableAudio()" />
+        <img src="assets/game/images/buttons/volume-on.svg"
+            *ngIf="homeService?.data?.settings.disableAudio"
+            (click)="homeService.enableAudio()" />
+    </div>
+
+    <div class="falling-gifts">
+        <img src="assets/game/images/gift.svg" />
+        <img src="assets/game/images/gift.svg" />
+        <img src="assets/game/images/gift.svg" />
+        <img src="assets/game/images/gift.svg" />
+        <img src="assets/game/images/gift.svg" />
+    </div>
 </div>

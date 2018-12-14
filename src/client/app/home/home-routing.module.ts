@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { NavigationType } from '../shared/navigation/navigation-type.enum';
 import { DonateComponent } from './donate/donate.component';
-import { EnterComponent } from './enter/enter.component';
 import { HomeComponent } from './home/home.component';
 import { LevelComponent } from './level/level.component';
 import { LevelsComponent } from './levels/levels.component';
@@ -13,12 +12,8 @@ import { StoreComponent } from './store/store.component';
     imports: [
         RouterModule.forChild([
             {
-                path: '', component: EnterComponent, pathMatch: 'full',
-                data: { title: 'Enter', nav: NavigationType.Primary }
-            },
-            {
-                path: 'menu', component: HomeComponent, pathMatch: 'full',
-                data: { title: 'Home', nav: NavigationType.Primary }
+                path: '', component: HomeComponent, pathMatch: 'full',
+                data: { title: 'Home' }
             },
             {
                 path: 'levels', component: LevelsComponent, pathMatch: 'full',
@@ -34,7 +29,7 @@ import { StoreComponent } from './store/store.component';
             },
             {
                 path: 'donate', component: DonateComponent, pathMatch: 'full',
-                data: { title: 'Donate', nav: NavigationType.Primary }
+                data: { title: 'Donate', nav: NavigationType.Back }
             },
             {
                 path: 'store', component: StoreComponent, pathMatch: 'full',
