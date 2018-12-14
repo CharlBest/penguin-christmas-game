@@ -45,15 +45,12 @@ export class GameService {
 
     showCountdownOne = false;
     showCountdownTwo = false;
-    showCountdownThree = true;
+    showCountdownThree = false;
 
     constructor(private homeService: HomeService,
         private configService: ConfigService) { }
 
     init(canvas: HTMLCanvasElement, loadingScreenElement: HTMLDivElement, levelId: number) {
-        // Start countdown
-        this.startCountdown();
-
         this.initVars();
         this.level = this.configService.levels.find(x => x.id === levelId);
         this.overwriteLevelForTesting();
@@ -201,6 +198,10 @@ export class GameService {
 
         this.assetsManager.onProgressObservable.add((event) => {
             this.assetManagerProgress = ((event.totalCount - event.remainingCount) / event.totalCount) * 100;
+            if (this.assetManagerProgress === 100) {
+                // Start countdown
+                this.startCountdown();
+            }
         });
     }
 
@@ -539,6 +540,8 @@ export class GameService {
     }
 
     startCountdown() {
+        this.showCountdownThree = true;
+
         if (this.homeService.data && !this.homeService.data.settings.disableAudio) {
             if (this.assets.countdownSound) {
                 this.assets.countdownSound.play();
