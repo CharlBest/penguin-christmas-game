@@ -30,6 +30,7 @@
 		z-index: 0;
 		display: flex;
 		justify-content: space-around;
+		overflow: hidden;
 
 		img {
 			top: -20%;
@@ -40,17 +41,17 @@
 
 		img:nth-of-type(n) {
 			animation: falling 10s linear infinite;
-			animation-delay: 3.8s;
+			animation-delay: 1.9s;
 		}
 
 		img:nth-of-type(2n) {
 			animation: falling2 10s linear infinite;
-			animation-delay: 7.8s;
+			animation-delay: 6.8s;
 		}
 
 		img:nth-of-type(3n) {
 			animation: falling3 10s linear infinite;
-			animation-delay: 4.6s;
+			animation-delay: 10s;
 		}
 
 		img:nth-of-type(4n) {
@@ -60,7 +61,7 @@
 
 		img:nth-of-type(5n) {
 			animation: falling 10s linear infinite;
-			animation-delay: 10s;
+			animation-delay: 4.6s;
 		}
 
 		@keyframes falling {
