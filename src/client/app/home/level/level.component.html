@@ -41,6 +41,12 @@
         [value]="gameService.assetManagerProgress"></mat-progress-bar>
 </div>
 
+<!-- Hack to preload all numbers -->
+<ng-container *ngFor="let digit of [0,1,2,3,4,5,6,7,8,9]">
+    <img src="assets/game/images/numbers/{{digit}}.svg"
+        style="display: none;" />
+</ng-container>
+
 <!-- <mat-card>
     <mat-card-subtitle>Everything on this demo site is live/working condition. Creating a profile, sending emails, donating
         money, uploading profile pictures and more.</mat-card-subtitle>
