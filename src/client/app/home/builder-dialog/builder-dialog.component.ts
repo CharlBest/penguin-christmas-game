@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { ConfigService } from '../config.service';
 import { House } from '../models/house';
 import { Level } from '../models/level';
@@ -13,7 +14,8 @@ export class BuilderDialogComponent implements OnInit {
   level: Level;
   exportData: string | null;
 
-  constructor(private configService: ConfigService) { }
+  constructor(private configService: ConfigService,
+    private router: Router) { }
 
   ngOnInit() {
     // HACK!!
@@ -49,7 +51,12 @@ export class BuilderDialogComponent implements OnInit {
     }
 
     localStorage.setItem('levels', JSON.stringify(data));
-    window.location.reload();
+
+    this.router.navigate(['/home/levels']).then(success => {
+      if (success) {
+        this.router.navigate(['/home/level', this.level.id]);
+      }
+    });
   }
 
   export() {
