@@ -348,6 +348,25 @@ export class GameService {
 
         this.objects.sleigh.sprite = sprite;
 
+        // // Mesh
+        // const mesh = MeshBuilder
+        //     .CreateBox(`sleighBox`, { width: 6, height: 1.5 }, this.scene);
+        // mesh.position.x = -1;
+        // mesh.position.y = 4;
+        // mesh.position.z = 0.5;
+        // // mesh.visibility = 0;
+
+        // // Physics
+        // mesh.physicsImpostor =
+        //     new PhysicsImpostor(mesh, PhysicsImpostor.BoxImpostor, { mass: 1, restitution: 0.9 }, this.scene);
+
+        // window.addEventListener('click', () => {
+        //     mesh.position.y = 4;
+        // });
+
+        // // Save
+        // this.objects.sleigh.mesh = mesh;
+
         // Start auto scroll scene
         this.activateAutoHorizontalScroll();
     }
@@ -452,8 +471,10 @@ export class GameService {
         this.objects.sleigh.sprite!.playAnimation(0, 4, true, 100, () => { });
 
         this.objects.camera.observer = this.scene.onBeforeRenderObservable.add(() => {
-            this.objects.sleigh.sprite!.position.x += Math.sin(this.level!.speed);
-            this.camera.position.x += Math.sin(this.level!.speed);
+            const move = Math.sin(this.level!.speed);
+
+            this.objects.sleigh.sprite!.position.x += move;
+            this.camera.position.x += move;
 
             if (this.camera.position.x > finishXPosition) {
                 if (!this.isFinished) {

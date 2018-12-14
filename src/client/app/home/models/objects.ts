@@ -15,7 +15,7 @@ export class Objects {
             },
             mesh: []
         };
-        this.sleigh = { spriteManager: null, sprite: null };
+        this.sleigh = { spriteManager: null, sprite: null, mesh: null };
     }
 
     camera: {
@@ -41,5 +41,6 @@ export class Objects {
     sleigh: {
         spriteManager: SpriteManager | null,
         sprite: Sprite | null,
+        mesh: Mesh | null,
     };
 }
