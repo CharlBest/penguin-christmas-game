@@ -1,6 +1,6 @@
 {
   "name": "nean-stack-starter",
-  "version": "0.0.883",
+  "version": "0.0.884",
   "description": "A sample Angular, Node.js and Neo4j demo app",
   "license": "MIT",
   "repository": {
@@ -25,8 +25,8 @@
     "start:worker:watch": "nodemon --max_semi_space_size=2 --max_old_space_size=256 dist/server/worker/worker.bundle.js",
     "start:client:watch": "ng serve --aot",
     "start:server:watch": "nodemon --inspect --max_semi_space_size=2 --max_old_space_size=256 dist/server/web/web.bundle.js",
-    "start:mobile:android": "cd src/client-mobile && cordova emulate android && cd ../..",
-    "start:mobile:ios": "cd src/client-mobile && cordova emulate ios && cd ../..",
+    "start:mobile:android": "cd src/client-mobile && cordova emulate android --device && cd ../..",
+    "start:mobile:ios": "cd src/client-mobile && cordova emulate ios --device && cd ../..",
     "ng": "ng",
     "test": "echo \"Error: no test... minimal project\" && exit 1",
     "lint": "ng lint",

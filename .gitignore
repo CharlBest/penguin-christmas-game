@@ -42,5 +42,7 @@ Thumbs.db
 # Cordova
 src/client-mobile/platforms
 src/client-mobile/plugins
+src/client-mobile/node_modules
 src/client-mobile/www
 src/client-mobile/package.json
+src/client-mobile/package-lock.json

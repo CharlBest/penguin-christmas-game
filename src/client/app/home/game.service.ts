@@ -43,10 +43,17 @@ export class GameService {
     lastHouseXPosition: number | undefined;
     isFinished = false;
 
+    showCountdownOne = false;
+    showCountdownTwo = false;
+    showCountdownThree = true;
+
     constructor(private homeService: HomeService,
         private configService: ConfigService) { }
 
     init(canvas: HTMLCanvasElement, loadingScreenElement: HTMLDivElement, levelId: number) {
+        // Start countdown
+        this.startCountdown();
+
         this.initVars();
         this.level = this.configService.levels.find(x => x.id === levelId);
         this.overwriteLevelForTesting();
@@ -368,7 +375,7 @@ export class GameService {
         // this.objects.sleigh.mesh = mesh;
 
         // Start auto scroll scene
-        this.activateAutoHorizontalScroll();
+        // this.activateAutoHorizontalScroll();
     }
 
     createBackground(x: number) {
@@ -502,6 +509,9 @@ export class GameService {
         // Score
         this.score = 0;
 
+        // Countdown
+        this.showCountdownThree = true;
+
         // Positions
         this.camera.position.x = 0;
         if (this.objects.sleigh.sprite) {
@@ -519,12 +529,47 @@ export class GameService {
         // Finised
         this.isFinished = false;
 
-        this.activateAutoHorizontalScroll();
+        // Start countdown
+        this.startCountdown();
     }
 
     onFinish() {
         this.deactivateAutoHorizontalScroll();
         this.finished.emit(this.score);
+    }
+
+    startCountdown() {
+        if (this.homeService.data && !this.homeService.data.settings.disableAudio) {
+            if (this.assets.countdownSound) {
+                this.assets.countdownSound.play();
+            }
+        }
+
+        const timeoutOne = setTimeout(() => {
+            this.showCountdownOne = false;
+            this.showCountdownTwo = true;
+            this.showCountdownThree = false;
+
+            clearTimeout(timeoutOne);
+        }, 1000);
+
+        const timeoutTwo = setTimeout(() => {
+            this.showCountdownOne = true;
+            this.showCountdownTwo = false;
+            this.showCountdownThree = false;
+
+            clearTimeout(timeoutTwo);
+        }, 2000);
+
+        const timeoutThree = setTimeout(() => {
+            this.showCountdownOne = false;
+            this.showCountdownTwo = false;
+            this.showCountdownThree = false;
+
+            this.activateAutoHorizontalScroll();
+
+            clearTimeout(timeoutThree);
+        }, 3000);
     }
 }
 

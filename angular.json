@@ -95,7 +95,7 @@
                 }
               ],
               "serviceWorker": false,
-              "baseHref": "./",
+              "baseHref": ".",
               "outputPath": "src/client-mobile/www"
             },
             "development": {
