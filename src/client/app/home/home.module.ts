@@ -11,6 +11,7 @@ import { FinishDialogComponent } from './finish-dialog/finish-dialog.component';
 import { HomeRoutingModule } from './home-routing.module';
 import { HomeComponent } from './home/home.component';
 import { LevelComponent } from './level/level.component';
+import { NumberToStringDigitArrayPipe } from './level/number-to-string-digit-array.pipe';
 import { LevelsComponent } from './levels/levels.component';
 import { MenuDialogComponent } from './menu-dialog/menu-dialog.component';
 import { SettingsComponent } from './settings/settings.component';
@@ -49,6 +50,7 @@ const materialModules = [
     MenuDialogComponent,
     FinishDialogComponent,
     BuilderDialogComponent,
+    NumberToStringDigitArrayPipe,
   ],
   entryComponents: [
     MenuDialogComponent,

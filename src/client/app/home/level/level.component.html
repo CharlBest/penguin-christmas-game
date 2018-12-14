@@ -1,9 +1,20 @@
 <canvas #canvas></canvas>
 
 <div class="toolbar">
-    <div>
-        <span *ngIf="gameService.bestScore">{{gameService.bestScore}} best score - </span>
-        <span>{{gameService.score}} points</span>
+    <div style="font-size: 2.3em;">
+        <span *ngIf="gameService.bestScore"
+            class="numbers">
+            <span>!</span>
+            <ng-container *ngFor="let digit of gameService.bestScore | numberToStringDigitArray">
+                <img src="assets/game/images/numbers/{{digit}}.svg" />
+            </ng-container>
+            <span>-</span>
+        </span>
+        <span class="numbers">
+            <ng-container *ngFor="let digit of gameService.score | numberToStringDigitArray">
+                <img src="assets/game/images/numbers/{{digit}}.svg" />
+            </ng-container>
+        </span>
     </div>
 
     <button mat-icon-button
