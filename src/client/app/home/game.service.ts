@@ -377,7 +377,7 @@ export class GameService {
             .CreateBox(`backgroundBox-${this.objects.background.mesh.length + 1}`, { width: 18, height: 10 }, this.scene);
 
         mesh.material = this.objects.background.material;
-        mesh.position.x = x;
+        mesh.position.x = x - 5 /* -10 to compensate for background offset */;
         mesh.position.y = 0;
         mesh.position.z = 10;
 
