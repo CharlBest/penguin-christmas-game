@@ -12,10 +12,10 @@
 
     <div class="volume-buttons">
         <img src="assets/game/images/buttons/mute.svg"
-            *ngIf="!homeService?.data?.settings.disableAudio"
+            [style.display]="!homeService?.data?.settings.disableAudio ? 'inline-block' : 'none'"
             (click)="homeService.disableAudio()" />
         <img src="assets/game/images/buttons/volume-on.svg"
-            *ngIf="homeService?.data?.settings.disableAudio"
+            [style.display]="homeService?.data?.settings.disableAudio ? 'inline-block' : 'none'"
             (click)="homeService.enableAudio()" />
     </div>
 
