@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ShareService } from '../../shared/services/share.service';
 import { HomeService } from '../home.service';
@@ -8,11 +8,17 @@ import { HomeService } from '../home.service';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit {
 
   constructor(private shareService: ShareService,
     public homeService: HomeService,
     private router: Router) { }
+
+  ngOnInit() {
+    if (this.homeService.data && !this.homeService.data.settings.disableAudio) {
+      this.homeService.enableAudio();
+    }
+  }
 
   share() {
     const url = ['/'];

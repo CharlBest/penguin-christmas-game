@@ -5,7 +5,6 @@ import { DonateComponent } from './donate/donate.component';
 import { HomeComponent } from './home/home.component';
 import { LevelComponent } from './level/level.component';
 import { LevelsComponent } from './levels/levels.component';
-import { SettingsComponent } from './settings/settings.component';
 import { StoreComponent } from './store/store.component';
 
 @NgModule({
@@ -22,10 +21,6 @@ import { StoreComponent } from './store/store.component';
             {
                 path: 'level/:id', component: LevelComponent, pathMatch: 'full',
                 data: { title: 'Level', nav: NavigationType.Primary }
-            },
-            {
-                path: 'settings', component: SettingsComponent, pathMatch: 'full',
-                data: { title: 'Settings', nav: NavigationType.Primary }
             },
             {
                 path: 'donate', component: DonateComponent, pathMatch: 'full',
