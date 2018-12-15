@@ -1,3 +1,15 @@
+<div class="background-image">
+    <img src="assets/game/images/home-background.svg" />
+</div>
+
+<div class="falling-gifts">
+    <img src="assets/game/images/gift.svg" />
+    <img src="assets/game/images/gift.svg" />
+    <img src="assets/game/images/gift.svg" />
+    <img src="assets/game/images/gift.svg" />
+    <img src="assets/game/images/gift.svg" />
+</div>
+
 <div class="container full-height bg">
     <img src="assets/game/images/logo.svg" />
 
@@ -5,10 +17,10 @@
         (click)="play()" />
     <img src="assets/game/images/buttons/share.svg"
         (click)="share()" />
-    <img src="assets/game/images/buttons/donate.svg"
+    <!-- <img src="assets/game/images/buttons/donate.svg"
         routerLink="/payment" />
     <img src="assets/game/images/buttons/store.svg"
-        routerLink="/home/store" />
+        routerLink="/home/store" /> -->
 
     <div class="volume-buttons">
         <img src="assets/game/images/buttons/mute.svg"
@@ -17,13 +29,5 @@
         <img src="assets/game/images/buttons/volume-on.svg"
             [style.display]="homeService?.data?.settings.disableAudio ? 'inline-block' : 'none'"
             (click)="homeService.enableAudio()" />
-    </div>
-
-    <div class="falling-gifts">
-        <img src="assets/game/images/gift.svg" />
-        <img src="assets/game/images/gift.svg" />
-        <img src="assets/game/images/gift.svg" />
-        <img src="assets/game/images/gift.svg" />
-        <img src="assets/game/images/gift.svg" />
     </div>
 </div>
