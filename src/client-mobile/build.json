@@ -1,0 +1,11 @@
+{
+    "android": {
+        "release": {
+            "keystore": "./penguins-save-christmas.keystore",
+            "storePassword": "Anja7812",
+            "alias": "penguinsSaveChristmas",
+            "password": "Anja7812",
+            "keystoreType": ""
+        }
+    }
+}
