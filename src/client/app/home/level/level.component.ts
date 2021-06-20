@@ -22,6 +22,15 @@ export class LevelComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute) { }
 
   ngOnInit() {
+    // setTimeout(() => {
+    //   const dialogRef2 = this.dialog.open(FinishDialogComponent, {
+    //     disableClose: true,
+    //     height: '80%',
+    //     width: '40%'
+    //   });
+    //   dialogRef2.componentInstance.score = 100;
+    // });
+
     this.route.paramMap.subscribe(params => {
       if (params.has('id')) {
         const levelId = params.get('id');

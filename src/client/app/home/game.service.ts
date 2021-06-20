@@ -65,7 +65,7 @@ export class GameService {
 
             // This creates and positions a free camera (non-mesh)
             this.camera = new FreeCamera('camera1', new Vector3(0, 0, -10), this.scene);
-            this.camera.mode = Camera.ORTHOGRAPHIC_CAMERA;
+            // this.camera.mode = Camera.ORTHOGRAPHIC_CAMERA;
 
             this.updateCameraAspectRatio();
 
@@ -74,7 +74,7 @@ export class GameService {
             // camera.setTarget(Vector3.Zero());
 
             // This attaches the camera to the canvas
-            // this.camera.attachControl(canvas, true);
+            this.camera.attachControl(canvas, true);
 
             // This creates a light, aiming 0,1,0 - to the sky (non-mesh)
             // const light = new BABYLON.PointLight('pointLight', new Vector3(0, 100, 100), this.scene);
